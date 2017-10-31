@@ -1,6 +1,6 @@
+import StageCellCollection from './StageCellCollection';
 import StageCellModel from './StageCellModel';
 
-// const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const STAGE = {
     CELL_HEIGHT: 100,
     CELL_WIDTH: 100,
@@ -10,11 +10,12 @@ const STAGE = {
 
 class StageViewController {
     private _element: SVGElement;
-    private _items: StageCellModel[] = [];
-    // private _onClickStageCellHandler: (event: UIEvent) => void = this._onClickStageCell.bind(this);
+    private _items: StageCellCollection = null;
+    private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
 
     constructor(element: SVGElement) {
         this._element = element;
+        this._items = new StageCellCollection();
 
         this._init()
             ._createChildren();
@@ -25,31 +26,24 @@ class StageViewController {
     }
 
     _createChildren(): this {
-        for (let i: number = 0; i <= STAGE.COLUMN_CELL_COUNT; i++) {
-            for (let j: number = 0; j <= STAGE.ROW_CELL_COUNT; j++) {
-                const stageCellModel: StageCellModel = new StageCellModel(i, j);
-                // const stageCell: SVGElement = document.createElementNS(SVG_NAMESPACE, 'rect') as SVGElement;
+        for (let y: number = 0; y <= STAGE.COLUMN_CELL_COUNT; y++) {
+            for (let x: number = 0; x <= STAGE.ROW_CELL_COUNT; x++) {
+                const stageCellModel: StageCellModel = new StageCellModel(x, y, this._onClickCellHandler);
 
-                // stageCell.setAttributeNS(null, 'x', `${i * STAGE.CELL_WIDTH}`);
-                // stageCell.setAttributeNS(null, 'y', `${j * STAGE.CELL_HEIGHT}`);
-                // stageCell.setAttributeNS(null, 'height', '100');
-                // stageCell.setAttributeNS(null, 'width', '100');
-                // stageCell.setAttribute('id', `${i}-${j}`);
-                // stageCell.classList.add('stage-cell');
-
-                // stageCell.addEventListener('click', this._onClickStageCellHandler);
                 this._element.appendChild(stageCellModel.element);
-                this._items.push(stageCellModel);
+                this._items.addItem(stageCellModel);
             }
         }
 
         return this;
     }
 
-    // _onClickStageCell(event: UIEvent): void {
-    //     const element: HTMLElement = event.currentTarget as HTMLElement;
-    //     console.log('click', element.id);
-    // }
+    _onClickCell(event: UIEvent): void {
+        const target: SVGElement = event.currentTarget as SVGElement;
+        const stageCellModel = this._items.findCellById(target.id);
+
+        console.log('++ click', target.id, stageCellModel);
+    }
 }
 
 export default StageViewController;
