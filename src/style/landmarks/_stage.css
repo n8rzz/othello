@@ -5,3 +5,15 @@
     max-width: 500px;
     margin: 20px auto;
 }
+
+.stage-cell {
+    fill: green;
+    stroke: black;
+    stroke-width: 2;
+}
+
+.stage-cell:hover {
+    cursor: pointer;
+    fill: white;
+    stroke-width: 2;
+}
