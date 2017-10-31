@@ -1,4 +1,8 @@
 const CELL_CLASSNAME = 'stage-cell';
+const PLAYER_PIECE_CLASSNAME = [
+    'mix-playerPiece_playerOne',
+    'mix-playerPiece_playerTwo',
+];
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const STAGE = {
     CELL_HEIGHT: 100,
@@ -14,7 +18,7 @@ class StageCellModel {
     public gameCellElement: SVGRectElement = null;
     public gamePieceElement: SVGCircleElement = null;
     public id: string = '';
-    public gamePieceRadius: number = STAGE.CELL_WIDTH * 0.5;
+    public gamePieceRadius: number = (STAGE.CELL_WIDTH - 10) * 0.5;
     public height: number = STAGE.CELL_HEIGHT;
     public width: number = STAGE.CELL_WIDTH;
     public x: number = -1;
@@ -69,6 +73,13 @@ class StageCellModel {
         return this;
     }
 
+    addGamePiece(currentPlayer: number): void {
+        const playerClassname: string = PLAYER_PIECE_CLASSNAME[currentPlayer];
+
+        this.gamePieceElement.classList.add(playerClassname);
+        this.element.appendChild(this.gamePieceElement);
+    }
+
     _buildCellGroupElement(): void {
         this.element = document.createElementNS(SVG_NAMESPACE, 'g');
         this.element.setAttribute('id', this.id);
@@ -82,7 +93,6 @@ class StageCellModel {
         this.gameCellElement.setAttributeNS(null, 'y', `${this._calculateYPosition()}`);
         this.gameCellElement.setAttributeNS(null, 'height', `${this.height}`);
         this.gameCellElement.setAttributeNS(null, 'width', `${this.width}`);
-        // this.gameCellElement.setAttribute('id', this.id);
         this.gameCellElement.classList.add(CELL_CLASSNAME);
     }
 
@@ -95,23 +105,23 @@ class StageCellModel {
         this.gamePieceElement.setAttributeNS(null, 'cx', `${this._calculateXPositionForPlayerPiece()}`);
         this.gamePieceElement.setAttributeNS(null, 'cy', `${this._calculateYPositionForPlayerPiece()}`);
         this.gamePieceElement.setAttributeNS(null, 'r', `${this.gamePieceRadius}`);
-        this.gamePieceElement.classList.add('stage-player-piece');
+        this.gamePieceElement.classList.add('playerPiece');
     }
 
     _calculateXPosition(): number {
-        return this.x * STAGE.CELL_WIDTH;
+        return this.x * this.width;
     }
 
     _calculateYPosition(): number {
-        return this.y * STAGE.CELL_HEIGHT;
+        return this.y * this.height;
     }
 
     _calculateXPositionForPlayerPiece(): number {
-        return this.x + (this.width * 0.5);
+        return (this.x * this.width) + (this.width * 0.5);
     }
 
     _calculateYPositionForPlayerPiece(): number {
-        return this.y + (this.height * 0.5);
+        return (this.y * this.height) + (this.height * 0.5);
     }
 
 }

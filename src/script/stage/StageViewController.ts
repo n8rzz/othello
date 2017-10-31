@@ -42,7 +42,9 @@ class StageViewController {
         const target: SVGElement = event.currentTarget as SVGElement;
         const stageCellModel = this._items.findCellById(target.id);
 
-        console.log('++ click', target.id, stageCellModel);
+        const player: number = new Date().getTime() % 100 >= 50 ? 1 : 0;
+
+        stageCellModel.addGamePiece(player);
     }
 }
 

@@ -4,4 +4,5 @@
 
 @import "./modules/_container.css";
 @import "./modules/_hlist.css";
+@import "./modules/_playerPiece.css";
 @import "./modules/_scoreboard.css";

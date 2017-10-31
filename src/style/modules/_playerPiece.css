@@ -1,0 +1,12 @@
+.playerPiece {
+    stroke: black;
+    stroke-width: 2;
+}
+
+.mix-playerPiece_playerOne {
+    fill: white;
+}
+
+.mix-playerPiece_playerTwo {
+    fill: black;
+}
