@@ -3,6 +3,12 @@ class StageViewController {
 
     constructor(element: SVGElement) {
         this._element = element;
+
+        this._init();
+    }
+
+    _init(): void {
+
     }
 }
 

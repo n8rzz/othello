@@ -5,12 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Othello</title>
+    <link rel="stylesheet" href="/dist/style/main.css">
 </head>
 <body>
     <div class="container">
-        <svg class="js-stage" height="800px" width="800px" viewbox="0 0 800 800">
+        <div class="scoreboard">
+            <ul class="hlist">
+                <li>
+                    <div>
+                        <ul class="hlist">
+                            <li>{player one}</li>
+                            <li>{score}</li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <ul class="hlist">
+                            <li>{score}</li>
+                            <li>{player one}</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <svg class="stage js-stage" viewbox="0 0 500 500">
 
         </svg>
+        <div>
+            chat window
+        </div>
     </div>
 
     <script src="/dist/bundle.js" stype="text/javascript"></script>

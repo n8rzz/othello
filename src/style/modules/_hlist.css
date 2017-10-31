@@ -1,0 +1,9 @@
+.hlist {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.hlist > * + * {
+    margin-left: 10px;
+}

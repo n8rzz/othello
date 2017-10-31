@@ -5,8 +5,9 @@
   "author": "Nate Geslin <teamtomkins23@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "build:styles": "cp -R ./src/style/ ./dist/style/",
     "build:scripts": "browserify -d src/script/app.ts -p [ tsify --noImplicitAny ] > dist/bundle.js",
-    "build:client": "rm -rf ./dist && mkdir dist && yarn build:scripts"
+    "build:client": "rm -rf ./dist && mkdir dist && yarn build:scripts && yarn build:styles"
   },
   "devDependencies": {
     "browserify": "^14.4.0",
