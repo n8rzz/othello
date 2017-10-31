@@ -3,6 +3,10 @@
     stroke-width: 2;
 }
 
+.playerPiece:hover {
+    cursor: pointer;
+}
+
 .mix-playerPiece_playerOne {
     fill: white;
 }

@@ -11,21 +11,22 @@ const STAGE = {
 class StageViewController {
     private _element: SVGElement;
     private _items: StageCellCollection = null;
-    private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
+    private _onClickCellHandler: (event: UIEvent) => void
 
-    constructor(element: SVGElement) {
+    constructor(element: SVGElement, onClickCellHandler: (event: UIEvent) => void) {
         this._element = element;
         this._items = new StageCellCollection();
+        this._onClickCellHandler = onClickCellHandler;
 
         this._init()
             ._createChildren();
     }
 
-    _init(): this {
+    private _init(): this {
         return this;
     }
 
-    _createChildren(): this {
+    private _createChildren(): this {
         for (let y: number = 0; y <= STAGE.COLUMN_CELL_COUNT; y++) {
             for (let x: number = 0; x <= STAGE.ROW_CELL_COUNT; x++) {
                 const stageCellModel: StageCellModel = new StageCellModel(x, y, this._onClickCellHandler);
@@ -38,11 +39,8 @@ class StageViewController {
         return this;
     }
 
-    _onClickCell(event: UIEvent): void {
-        const target: SVGElement = event.currentTarget as SVGElement;
-        const stageCellModel = this._items.findCellById(target.id);
-
-        const player: number = new Date().getTime() % 100 >= 50 ? 1 : 0;
+    public togglePlayerInCell(player: number, cellId: string): void {
+        const stageCellModel = this._items.findCellById(cellId);
 
         stageCellModel.addGamePiece(player);
     }

@@ -1,7 +1,7 @@
-import StageViewController from './stage/StageViewController';
+import GameController from './game/GameController';
 
 class App {
-    public stageViewController: StageViewController = null;
+    public gameController: GameController = null;
 
     constructor() {
         this.init();
@@ -19,7 +19,8 @@ class App {
 
     public createChildren(): this {
         const element: SVGElement = document.getElementsByClassName('js-stage')[0] as SVGElement;
-        this.stageViewController = new StageViewController(element);
+
+        this.gameController = new GameController(element)
 
         return this;
     }

@@ -1,8 +1,8 @@
-const CELL_CLASSNAME = 'stage-cell';
-const PLAYER_PIECE_CLASSNAME = [
+enum PLAYER_PIECE_CLASSNAME {
     'mix-playerPiece_playerOne',
     'mix-playerPiece_playerTwo',
-];
+};
+const CELL_CLASSNAME = 'stage-cell';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const STAGE = {
     CELL_HEIGHT: 100,
@@ -18,6 +18,7 @@ class StageCellModel {
     public gameCellElement: SVGRectElement = null;
     public gamePieceElement: SVGCircleElement = null;
     public id: string = '';
+    public isActive: boolean = false;
     public gamePieceRadius: number = (STAGE.CELL_WIDTH - 10) * 0.5;
     public height: number = STAGE.CELL_HEIGHT;
     public width: number = STAGE.CELL_WIDTH;
@@ -42,11 +43,11 @@ class StageCellModel {
             ._enable();
     }
 
-    _init(): this {
+    private _init(): this {
         return this;
     }
 
-    _createChildren(): this {
+    private _createChildren(): this {
         this._buildCellElement();
         this._buildGamePieceElement();
         this._buildCellGroupElement();
@@ -54,40 +55,59 @@ class StageCellModel {
         return this;
     }
 
-    _enable(): this {
+    private _enable(): this {
         this.element.addEventListener('click', this._onClickStageCellHandler);
 
         return this;
     }
 
-    _disable(): this {
+    private _disable(): this {
         this.element.removeEventListener('click', this._onClickStageCellHandler);
 
         return this._destroy();
     }
 
-    _destroy(): this {
+    private _destroy(): this {
         this.x = -1;
         this.y = -1;
 
         return this;
     }
 
-    addGamePiece(currentPlayer: number): void {
+    public addGamePiece(currentPlayer: number): void {
+        this.isActive = true;
         const playerClassname: string = PLAYER_PIECE_CLASSNAME[currentPlayer];
 
         this.gamePieceElement.classList.add(playerClassname);
         this.element.appendChild(this.gamePieceElement);
     }
 
-    _buildCellGroupElement(): void {
+    public togglePlayer(currentPlayer: number): void {
+        if (!this.isActive) {
+            this.addGamePiece(currentPlayer);
+
+            return;
+        }
+
+        if (this._hasClass(PLAYER_PIECE_CLASSNAME[0])) {
+            this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[0]);
+            this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[1]);
+
+            return;
+        }
+
+        this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[1]);
+        this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[0]);
+    }
+
+    private _buildCellGroupElement(): void {
         this.element = document.createElementNS(SVG_NAMESPACE, 'g');
         this.element.setAttribute('id', this.id);
 
         this.element.appendChild(this.gameCellElement);
     }
 
-    _buildCellElement(): void {
+    private _buildCellElement(): void {
         this.gameCellElement = document.createElementNS(SVG_NAMESPACE, 'rect');
         this.gameCellElement.setAttributeNS(null, 'x', `${this._calculateXPosition()}`);
         this.gameCellElement.setAttributeNS(null, 'y', `${this._calculateYPosition()}`);
@@ -96,11 +116,11 @@ class StageCellModel {
         this.gameCellElement.classList.add(CELL_CLASSNAME);
     }
 
-    _buildCellId(): string {
+    private _buildCellId(): string {
         return `${this.x}-${this.y}`;
     }
 
-    _buildGamePieceElement(): void {
+    private _buildGamePieceElement(): void {
         this.gamePieceElement = document.createElementNS(SVG_NAMESPACE, 'circle');
         this.gamePieceElement.setAttributeNS(null, 'cx', `${this._calculateXPositionForPlayerPiece()}`);
         this.gamePieceElement.setAttributeNS(null, 'cy', `${this._calculateYPositionForPlayerPiece()}`);
@@ -108,22 +128,25 @@ class StageCellModel {
         this.gamePieceElement.classList.add('playerPiece');
     }
 
-    _calculateXPosition(): number {
+    private _calculateXPosition(): number {
         return this.x * this.width;
     }
 
-    _calculateYPosition(): number {
+    private _calculateYPosition(): number {
         return this.y * this.height;
     }
 
-    _calculateXPositionForPlayerPiece(): number {
+    private _calculateXPositionForPlayerPiece(): number {
         return (this.x * this.width) + (this.width * 0.5);
     }
 
-    _calculateYPositionForPlayerPiece(): number {
+    private _calculateYPositionForPlayerPiece(): number {
         return (this.y * this.height) + (this.height * 0.5);
     }
 
+    private _hasClass(classname: string): boolean {
+        return this.gamePieceElement.classList.contains(classname);
+    }
 }
 
 export default StageCellModel;
