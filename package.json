@@ -1,0 +1,19 @@
+{
+  "name": "othello",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Nate Geslin <teamtomkins23@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build:scripts": "browserify -d src/script/app.ts -p [ tsify --noImplicitAny ] > dist/bundle.js",
+    "build:client": "rm -rf ./dist && mkdir dist && yarn build:scripts"
+  },
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "tsify": "^3.0.3"
+  },
+  "dependencies": {
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3"
+  }
+}
