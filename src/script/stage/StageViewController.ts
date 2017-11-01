@@ -11,7 +11,6 @@ const STAGE = {
 class StageViewController {
     private _element: SVGElement;
     private _items: StageCellCollection = null;
-    private _activeStaceCellModelCache: StageCellModel = null;
     private _onClickCellHandler: (event: UIEvent) => void
 
     constructor(element: SVGElement, onClickCellHandler: (event: UIEvent) => void) {
@@ -40,22 +39,10 @@ class StageViewController {
         return this;
     }
 
-    public isLegalMoveForPlayerAndCellId(player: number, cellId: string): boolean {
-        this._activeStaceCellModelCache = this._items.findCellById(cellId);
-
-        return this.isLegalMoveForStageCellModel(this._activeStaceCellModelCache);
-    }
-
-    public isLegalMoveForStageCellModel(stageCellModel: StageCellModel): boolean {
-        return !stageCellModel.isActive;
-    }
-
     public addPlayerToCell(player: number, cellId: string): void {
-        if (!this._activeStaceCellModelCache) {
-            this._activeStaceCellModelCache = this._items.findCellById(cellId);
-        }
+        const stageCellModel: StageCellModel = this._items.findCellById(cellId);
 
-        this._activeStaceCellModelCache.addGamePiece(player);
+        stageCellModel.addGamePiece(player);
     }
 }
 

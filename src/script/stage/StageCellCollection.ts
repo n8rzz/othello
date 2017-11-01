@@ -1,4 +1,5 @@
 import StageCellModel from './StageCellModel';
+import { positionToIdTranslator } from '../translator/stageCellTranslators';
 
 class StageCellCollection {
     public items: StageCellModel[] = [];
@@ -23,6 +24,12 @@ class StageCellCollection {
         }
 
         return stageCellModel;
+    }
+
+    public findCellByPosition(position: number[]): StageCellModel {
+        const cellId: string = positionToIdTranslator(position);
+
+        return this.findCellById(cellId);
     }
 }
 
