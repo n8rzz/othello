@@ -34,26 +34,31 @@ class GameController {
 
     public update(cellId: string): void {
         this._playerDidMove(cellId);
-        this._prepareNextTurn();
-        this._moveToNextTurn();
     }
 
     private _playerDidMove(cellId: string): void {
-        this._stageViewController.togglePlayerInCell(this.activePlayer, cellId);
+        if (!this._stageViewController.isLegalMoveForPlayerAndCellId(this.activePlayer, cellId)) {
+            return;
+        }
+
+        this._stageViewController.addPlayerToCell(this.activePlayer, cellId);
         // update surrounding pieces
+
+        this._completeCurrentTurn();
+        this._moveToNextTurn();
     }
 
-    private _prepareNextTurn(): void {
+    private _completeCurrentTurn(): void {
         // identify at least one legal move
     }
 
     private _moveToNextTurn(): void {
-        this._togglePlayer();
+        this._toggleActivePlayer();
     }
 
     // =====================================================
 
-    private _togglePlayer(): void {
+    private _toggleActivePlayer(): void {
         if (this.activePlayer === PLAYER.ONE) {
             this.activePlayer = PLAYER.TWO;
 

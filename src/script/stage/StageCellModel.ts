@@ -19,9 +19,9 @@ class StageCellModel {
     public gamePieceElement: SVGCircleElement = null;
     public id: string = '';
     public isActive: boolean = false;
-    public gamePieceRadius: number = (STAGE.CELL_WIDTH - 10) * 0.5;
-    public height: number = STAGE.CELL_HEIGHT;
-    public width: number = STAGE.CELL_WIDTH;
+    public gamePieceRadius: number = -1;
+    public height: number = -1;
+    public width: number = -1;
     public x: number = -1;
     public y: number = -1;
 
@@ -33,6 +33,9 @@ class StageCellModel {
         y: number,
         onClickHandler: (event: UIEvent) => void
     ) {
+        this.gamePieceRadius = (STAGE.CELL_WIDTH - 10) * 0.5;
+        this.height = STAGE.CELL_HEIGHT;
+        this.width = STAGE.CELL_WIDTH;
         this.x = x;
         this.y = y;
         this.id = this._buildCellId();
@@ -82,23 +85,17 @@ class StageCellModel {
         this.element.appendChild(this.gamePieceElement);
     }
 
-    public togglePlayer(currentPlayer: number): void {
-        if (!this.isActive) {
-            this.addGamePiece(currentPlayer);
+    // public togglePlayer(currentPlayer: number): void {
+    //     if (this._hasClass(PLAYER_PIECE_CLASSNAME[0])) {
+    //         this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[0]);
+    //         this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[1]);
 
-            return;
-        }
+    //         return;
+    //     }
 
-        if (this._hasClass(PLAYER_PIECE_CLASSNAME[0])) {
-            this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[0]);
-            this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[1]);
-
-            return;
-        }
-
-        this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[1]);
-        this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[0]);
-    }
+    //     this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[1]);
+    //     this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[0]);
+    // }
 
     private _buildCellGroupElement(): void {
         this.element = document.createElementNS(SVG_NAMESPACE, 'g');
