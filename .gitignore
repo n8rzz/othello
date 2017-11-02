@@ -63,5 +63,7 @@ Library/
 .zcompdump
 .zhistory
 
+/.nyc_output
+coverage/
 dist/
 node_modules/
