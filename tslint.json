@@ -1,5 +1,5 @@
 {
-  "extends": ["tslint:latest", "tslint-react"],
+  "extends": ["tslint:latest"],
   "rules": {
     "arrow-parens": true,
     "arrow-return-shorthand": [true],
@@ -17,7 +17,9 @@
     "no-conditional-assignment": true,
     "no-console": [true, "log"],
     "no-duplicate-variable": true,
+    "no-empty": false,
     "no-empty-interface": false,
+    "no-implicit-dependencies": false,
     "no-inferrable-types": [false],
     "no-invalid-this": [true, "check-function-in-method"],
     "no-null-keyword": false,

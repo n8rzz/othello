@@ -1,7 +1,7 @@
 enum PLAYER_PIECE_CLASSNAME {
     'mix-playerPiece_playerOne',
     'mix-playerPiece_playerTwo',
-};
+}
 const CELL_CLASSNAME = 'stage-cell';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 const STAGE = {
@@ -12,7 +12,7 @@ const STAGE = {
 };
 
 class StageCellModel {
-    static _count = 0;
+    private static _count = 0;
 
     public element: SVGElement = null;
     public gameCellElement: SVGRectElement = null;
@@ -31,7 +31,7 @@ class StageCellModel {
     constructor(
         x: number,
         y: number,
-        onClickHandler: (event: UIEvent) => void
+        onClickHandler: (event: UIEvent) => void,
     ) {
         this.gamePieceRadius = (STAGE.CELL_WIDTH - 10) * 0.5;
         this.height = STAGE.CELL_HEIGHT;
@@ -44,6 +44,14 @@ class StageCellModel {
         this._init()
             ._createChildren()
             ._enable();
+    }
+
+    public addGamePiece(currentPlayer: number): void {
+        this.isActive = true;
+        const playerClassname: string = PLAYER_PIECE_CLASSNAME[currentPlayer];
+
+        this.gamePieceElement.classList.add(playerClassname);
+        this.element.appendChild(this.gamePieceElement);
     }
 
     private _init(): this {
@@ -75,14 +83,6 @@ class StageCellModel {
         this.y = -1;
 
         return this;
-    }
-
-    public addGamePiece(currentPlayer: number): void {
-        this.isActive = true;
-        const playerClassname: string = PLAYER_PIECE_CLASSNAME[currentPlayer];
-
-        this.gamePieceElement.classList.add(playerClassname);
-        this.element.appendChild(this.gamePieceElement);
     }
 
     // public togglePlayer(currentPlayer: number): void {

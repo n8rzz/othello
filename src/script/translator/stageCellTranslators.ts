@@ -1,6 +1,6 @@
 enum POSITION_INDEX {
     X,
-    Y
+    Y,
 }
 
 const ID_SEPARATOR = '-';
@@ -16,5 +16,5 @@ export function idToPositionTranslator(id: string): number[] {
 }
 
 export function positionToIdTranslator(position: number[]): string {
-    return `${position[POSITION_INDEX.X]}-${POSITION_INDEX.Y}`;
+    return `${position[POSITION_INDEX.X]}-${position[POSITION_INDEX.Y]}`;
 }
