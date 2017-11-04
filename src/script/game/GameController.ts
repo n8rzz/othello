@@ -15,17 +15,6 @@ class GameController {
             ._createChildren(element);
     }
 
-    private _init(): this {
-        return this;
-    }
-
-    private _createChildren(element: SVGElement): this {
-        this._gameBoardController = new GameBoardController();
-        this._stageViewController = new StageViewController(element, this._onClickCellHandler);
-
-        return this;
-    }
-
     public reset(): void {
         this._gameBoardController.reset();
         // this._stageViewController.reset();
@@ -38,7 +27,7 @@ class GameController {
     }
 
     private _playerDidMove(position: number[], cellId: string): void {
-        if (!this._gameBoardController.isLegalMove(position)) {
+        if (!this._gameBoardController.playerCanMoveToPosition(position, this.activePlayer)) {
             return;
         }
 
@@ -61,6 +50,17 @@ class GameController {
     }
 
     // =====================================================
+
+    private _init(): this {
+        return this;
+    }
+
+    private _createChildren(element: SVGElement): this {
+        this._gameBoardController = new GameBoardController();
+        this._stageViewController = new StageViewController(element, this._onClickCellHandler);
+
+        return this;
+    }
 
     private _toggleActivePlayer(): void {
         if (this.activePlayer === PLAYER.ONE) {
