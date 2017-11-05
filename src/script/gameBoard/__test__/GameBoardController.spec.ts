@@ -49,6 +49,14 @@ describe('GameBoardController', () => {
         ).to.be.true;
     });
 
+    it('.countPiecesForPlayer() returns a number of pieces on the board belonging to a player', () => {
+        const controller = new GameBoardController();
+        controller.updatePlayerAtPosition(1, [2, 2]);
+
+        expect(controller.countPiecesForPlayer(0)).to.eq(2);
+        expect(controller.countPiecesForPlayer(1)).to.eq(3);
+    });
+
     it('.findVectorsToOpposingPlayerPiece() returns an array of vectors to opposing pieces', () => {
         const expectedResult = [[1, 1]];
         const positionMock = [1, 1];

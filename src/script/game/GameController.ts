@@ -17,6 +17,14 @@ class GameController {
             ._createChildren(scoreboardElement, stageElement);
     }
 
+    public countPlayerOnePieces(): number {
+        return -1;
+    }
+
+    public countPlayerTwoPieces(): number {
+        return -1;
+    }
+
     public reset(): void {
         this._gameBoardController.reset();
         // this._stageViewController.reset();
@@ -62,7 +70,13 @@ class GameController {
         this._stageViewController = new StageViewController(stageElement, this._gameBoardController.gameBoard, this._onClickCellHandler);
         this._scoreboardView = new ScoreboardView(scoreboardElement, this.activePlayer);
 
+        this._updateScoreboardView();
+
         return this;
+    }
+
+    private _countPlayerPeices(player: PLAYER): number {
+        return this._gameBoardController.countPiecesForPlayer(player);
     }
 
     private _toggleActivePlayer(): void {
@@ -76,7 +90,11 @@ class GameController {
     }
 
     private _updateScoreboardView(): void {
+        const playerOneScore = this._gameBoardController.countPiecesForPlayer(PLAYER.ONE);
+        const playerTwoScore = this._gameBoardController.countPiecesForPlayer(PLAYER.TWO);
+
         this._scoreboardView.updateViewForActivePlayer(this.activePlayer);
+        this._scoreboardView.updateScore(playerOneScore, playerTwoScore);
     }
 
     private _onClickCell(event: UIEvent): void {

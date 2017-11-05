@@ -11,6 +11,24 @@ class GameBoardController {
         this.gameBoard = GAME_BOARD_INITIAL_STATE;
     }
 
+    public countPiecesForPlayer(player: PLAYER): number {
+        let sum = 0;
+
+        for (let i = 0; i < this.gameBoard.length; i++) {
+            for (let j = 0; j < this.gameBoard[i].length; j++) {
+                const position = [i, j];
+
+                if (this._getPlayerAtPosition(position) !== player) {
+                    continue;
+                }
+
+                sum++;
+            }
+        }
+
+        return sum;
+    }
+
     public doesCaptureOpposingPlayerPiece(position: number[], player: PLAYER): boolean {
         const vectorsToOpposingPiece: number[][] = this.findVectorsToOpposingPlayerPiece(position, player);
 
