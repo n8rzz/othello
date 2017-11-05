@@ -1,0 +1,17 @@
+.playerList {
+    display: flex;
+    justify-content: space-around;
+}
+
+.playerList-item {
+    display: flex;
+    flex-basis: 50%;
+    justify-content: space-evenly;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.mix-playerList-item_isActive {
+    background-color: green;
+    color: #ffffff;
+}

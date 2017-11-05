@@ -18,9 +18,10 @@ class App {
     }
 
     public createChildren(): this {
-        const element: SVGElement = document.getElementsByClassName('js-stage')[0] as SVGElement;
+        const scoreboardElement: HTMLElement = document.getElementsByClassName('js-scoreboardView')[0] as HTMLElement;
+        const stageElement: SVGElement = document.getElementsByClassName('js-stage')[0] as SVGElement;
 
-        this.gameController = new GameController(element)
+        this.gameController = new GameController(scoreboardElement, stageElement);
 
         return this;
     }

@@ -9,23 +9,15 @@
 </head>
 <body>
     <div class="container">
-        <div class="scoreboard">
-            <ul class="hlist">
-                <li>
-                    <div>
-                        <ul class="hlist">
-                            <li>{player one}</li>
-                            <li>{score}</li>
-                        </ul>
-                    </div>
+        <div class="scoreboard js-scoreboardView">
+            <ul class="playerList">
+                <li class="playerList-item js-scoreboardView-playerOne">
+                    <div>{{Score}}</div>
+                    <div>Player One</div>
                 </li>
-                <li>
-                    <div>
-                        <ul class="hlist">
-                            <li>{score}</li>
-                            <li>{player one}</li>
-                        </ul>
-                    </div>
+                <li class="playerList-item js-scoreboardView-playerTwo">
+                    <div>Player Two</div>
+                    <div>{{Score}}</div>
                 </li>
             </ul>
         </div>

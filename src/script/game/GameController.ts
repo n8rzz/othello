@@ -1,5 +1,6 @@
 import GameBoardController from '../gameBoard/GameBoardController';
 import StageViewController from '../stage/StageViewController';
+import ScoreboardView from '../scoreboard/ScoreboardView';
 import { idToPositionTranslator } from '../translator/stageCellTranslators';
 import { PLAYER } from '../constants/playerConstants';
 
@@ -8,11 +9,12 @@ class GameController {
 
     private _gameBoardController: GameBoardController = null;
     private _stageViewController: StageViewController = null;
+    private _scoreboardView: ScoreboardView = null;
     private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
 
-    constructor(element: SVGElement) {
+    constructor(scoreboardElement: HTMLElement, stageElement: SVGElement) {
         return this._init()
-            ._createChildren(element);
+            ._createChildren(scoreboardElement, stageElement);
     }
 
     public reset(): void {
@@ -55,9 +57,10 @@ class GameController {
         return this;
     }
 
-    private _createChildren(element: SVGElement): this {
+    private _createChildren(scoreboardElement: HTMLElement, stageElement: SVGElement): this {
         this._gameBoardController = new GameBoardController();
-        this._stageViewController = new StageViewController(element, this._gameBoardController.gameBoard, this._onClickCellHandler);
+        this._stageViewController = new StageViewController(stageElement, this._gameBoardController.gameBoard, this._onClickCellHandler);
+        this._scoreboardView = new ScoreboardView(scoreboardElement, this.activePlayer);
 
         return this;
     }
@@ -73,7 +76,7 @@ class GameController {
     }
 
     private _updateScoreboardView(): void {
-        // update the scoreboard for the next turn
+        this._scoreboardView.updateViewForActivePlayer(this.activePlayer);
     }
 
     private _onClickCell(event: UIEvent): void {
