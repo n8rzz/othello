@@ -20,4 +20,5 @@ export const VECTOR_FROM_POSITION = [
     [1, 1], // SOUTH_EAST
     [0, 1], // SOUTH
     [-1, 1], // SOUTH_WEST
+    [-1, 0], // WEST
 ];

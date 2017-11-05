@@ -57,7 +57,7 @@ class GameController {
 
     private _createChildren(element: SVGElement): this {
         this._gameBoardController = new GameBoardController();
-        this._stageViewController = new StageViewController(element, this._onClickCellHandler);
+        this._stageViewController = new StageViewController(element, this._gameBoardController.gameBoard, this._onClickCellHandler);
 
         return this;
     }

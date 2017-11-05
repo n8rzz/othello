@@ -1,15 +1,11 @@
-enum PLAYER_PIECE_CLASSNAME {
-    'mix-playerPiece_playerOne',
-    'mix-playerPiece_playerTwo',
-}
+import {
+    PLAYER,
+    PLAYER_PIECE_CLASSNAME,
+} from '../constants/playerConstants';
+import { STAGE } from '../constants/stageConstants';
+
 const CELL_CLASSNAME = 'stage-cell';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
-const STAGE = {
-    CELL_HEIGHT: 100,
-    CELL_WIDTH: 100,
-    ROW_CELL_COUNT: 8,
-    COLUMN_CELL_COUNT: 8,
-};
 
 class StageCellModel {
     private static _count = 0;
@@ -26,11 +22,13 @@ class StageCellModel {
     public y: number = -1;
 
     private _modelId = StageCellModel._count++;
+    private _playerId: PLAYER = PLAYER.INVALID_PLAYER;
     private _onClickStageCellHandler: (event: UIEvent) => void;
 
     constructor(
         x: number,
         y: number,
+        player: PLAYER,
         onClickHandler: (event: UIEvent) => void,
     ) {
         this.gamePieceRadius = (STAGE.CELL_WIDTH - 10) * 0.5;
@@ -38,7 +36,9 @@ class StageCellModel {
         this.width = STAGE.CELL_WIDTH;
         this.x = x;
         this.y = y;
+        // must come after `x` and `y`
         this.id = this._buildCellId();
+        this._playerId = player;
         this._onClickStageCellHandler = onClickHandler;
 
         this._init()
@@ -62,6 +62,10 @@ class StageCellModel {
         this._buildCellElement();
         this._buildGamePieceElement();
         this._buildCellGroupElement();
+
+        if (this._playerId !== PLAYER.INVALID_PLAYER) {
+            this.addGamePiece(this._playerId);
+        }
 
         return this;
     }
