@@ -17,19 +17,16 @@ class GameController {
             ._createChildren(scoreboardElement, stageElement);
     }
 
-    public countPlayerOnePieces(): number {
-        return -1;
-    }
-
-    public countPlayerTwoPieces(): number {
-        return -1;
-    }
-
     public reset(): void {
         this._gameBoardController.reset();
         // this._stageViewController.reset();
     }
 
+    // Methods enclosed below are the main game loop methods
+    // though there isn't a true game-loop here, these methods are
+    // fired once a player clicks on a game cell.
+    // each one has a specific purpose and must be run before
+    // the start of the next turn.
     // =====================================================
 
     public update(position: number[], cellId: string): void {
@@ -41,17 +38,17 @@ class GameController {
             return;
         }
 
+        this._gameBoardController.updateGameBoardStateForPendingMove(this.activePlayer, position);
         this._gameBoardController.updatePlayerAtPosition(this.activePlayer, position);
-        // TODO: read from state and update according
         this._stageViewController.addPlayerToCell(this.activePlayer, cellId);
-        // TODO: update surrounding pieces
+        this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
 
         this._completeCurrentTurn();
         this._moveToNextTurn();
     }
 
     private _completeCurrentTurn(): void {
-        // identify at least one legal move
+        this._gameBoardController.resetCacheAfterTurn();
     }
 
     private _moveToNextTurn(): void {

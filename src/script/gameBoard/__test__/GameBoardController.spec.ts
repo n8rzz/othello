@@ -51,10 +51,10 @@ describe('GameBoardController', () => {
 
     it('.countPiecesForPlayer() returns a number of pieces on the board belonging to a player', () => {
         const controller = new GameBoardController();
-        controller.updatePlayerAtPosition(1, [2, 2]);
+        controller.updatePlayerAtPosition(1, [2, 3]);
 
         expect(controller.countPiecesForPlayer(0)).to.eq(2);
-        expect(controller.countPiecesForPlayer(1)).to.eq(3);
+        expect(controller.countPiecesForPlayer(1)).to.eq(4);
     });
 
     it('.findVectorsToOpposingPlayerPiece() returns an array of vectors to opposing pieces', () => {
@@ -91,5 +91,45 @@ describe('GameBoardController', () => {
         const result = controller.isCapturePieceAlongVector(vectorMock, positionMock, playerMock);
 
         expect(result).to.be.true;
+    });
+
+    it('.updateGameBoardStateForPendingMove() updates gameBoard based on the current move', () => {
+        const positionMock = [2, 5];
+        const playerMock = 0;
+        const controller = new GameBoardController();
+        // tslint:disable whitespace
+        controller.gameBoard = [
+            [-1,-1,-1,-1,-1,-1,-1,-1],
+            [-1,-1,-1,-1,-1,-1,-1,-1],
+            [-1,-1,-1,0,1,-1,-1,-1],
+            [-1,-1,-1,0,1,-1,-1,-1],
+            [-1,-1,-1,0,1,-1,-1,-1],
+            [-1,-1,-1,-1,-1,-1,-1,-1],
+            [-1,-1,-1,-1,-1,-1,-1,-1],
+            [-1,-1,-1,-1,-1,-1,-1,-1]
+        ];
+        // tslint:enable whitespace
+        controller.doesCaptureOpposingPlayerPiece(positionMock, playerMock);
+
+        controller.updateGameBoardStateForPendingMove(playerMock, positionMock);
+
+        expect(controller.gameBoard[3][4]).to.eq(0);
+        expect(controller.gameBoard[2][4]).to.eq(0);
+    });
+
+    it('.collectPositionsAlongVectorUntilPlayer() gathers a list of positions that a player has captured and will need to update', () => {
+        const expectedResult = [[1, 2], [2, 2], [3, 2]];
+        const vectorMock = [1, 0];
+        const positionMock = [0, 2];
+        const playerMock = 0;
+        const controller = new GameBoardController();
+        controller.gameBoard[1][2] = 1;
+        controller.gameBoard[2][2] = 1;
+        controller.gameBoard[3][2] = 1;
+        controller.gameBoard[4][2] = 0;
+
+        const result = controller.collectPositionsAlongVectorUntilPlayer(vectorMock, positionMock, playerMock, []);
+
+        expect(result).to.deep.eq(expectedResult);
     });
 });

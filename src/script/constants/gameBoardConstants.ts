@@ -14,11 +14,11 @@ export const GAME_BOARD_INITIAL_STATE = [
 // should be used with VECTOR_DIRECTION to access values here by index
 export const VECTOR_FROM_POSITION = [
     [-1, -1], // NORTH_WEST
-    [0, -1], // NORTH
-    [1, -1], // NORTH_EAST
-    [1, 0], // EAST
+    [-1, 0], // NORTH
+    [-1, 1], // NORTH_EAST
+    [0, 1], // EAST
     [1, 1], // SOUTH_EAST
-    [0, 1], // SOUTH
-    [-1, 1], // SOUTH_WEST
-    [-1, 0], // WEST
+    [1, 0], // SOUTH
+    [1, -1], // SOUTH_WEST
+    [0, -1], // WEST
 ];

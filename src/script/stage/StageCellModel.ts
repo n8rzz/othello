@@ -118,7 +118,7 @@ class StageCellModel {
     }
 
     private _buildCellId(): string {
-        return `${this.x}-${this.y}`;
+        return `${this.y}-${this.x}`;
     }
 
     private _buildGamePieceElement(): void {

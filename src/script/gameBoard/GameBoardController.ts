@@ -1,3 +1,4 @@
+import { positionToIdTranslator } from '../translator/stageCellTranslators';
 import {
     GAME_BOARD_INITIAL_STATE,
     VECTOR_FROM_POSITION,
@@ -7,8 +8,23 @@ import { PLAYER } from '../constants/playerConstants';
 class GameBoardController {
     public gameBoard: number[][] = GAME_BOARD_INITIAL_STATE;
 
-    public reset(): void {
-        this.gameBoard = GAME_BOARD_INITIAL_STATE;
+    private _vectorsToOpponentCache: number[][] = [];
+
+    public collectPositionsAlongVectorUntilPlayer(vector: number[], position: number[], player: PLAYER, sum: number[][]): number[][] {
+        const comparisonPosition: number[] = this._calculateComparisonPositionFromPositionWithVector(position, vector);
+        const comparisonPlayer: PLAYER = this._getPlayerAtPosition(comparisonPosition);
+
+        if (!this.isValidPosition(comparisonPosition)) {
+            return [];
+        }
+
+        if (comparisonPlayer === this._getOpposingPlayerNumber(player)) {
+            sum.push(comparisonPosition);
+
+            this.collectPositionsAlongVectorUntilPlayer(vector, comparisonPosition, player, sum);
+        }
+
+        return sum;
     }
 
     public countPiecesForPlayer(player: PLAYER): number {
@@ -30,16 +46,16 @@ class GameBoardController {
     }
 
     public doesCaptureOpposingPlayerPiece(position: number[], player: PLAYER): boolean {
-        const vectorsToOpposingPiece: number[][] = this.findVectorsToOpposingPlayerPiece(position, player);
+        this._vectorsToOpponentCache = this.findVectorsToOpposingPlayerPiece(position, player);
 
-        if (vectorsToOpposingPiece.length === 0) {
+        if (this._vectorsToOpponentCache.length === 0) {
             return false;
         }
 
-        for (let i = 0; i < vectorsToOpposingPiece.length; i++) {
-            const vector = vectorsToOpposingPiece[i];
+        for (let i = 0; i < this._vectorsToOpponentCache.length; i++) {
+            const vector = this._vectorsToOpponentCache[i];
 
-            // returns true on the first captre formation, there may be several
+            // returns true on the first capture formation, there may be several
             if (this.isCapturePieceAlongVector(vector, position, player)) {
                 return true;
             }
@@ -70,19 +86,6 @@ class GameBoardController {
         return this.isLegalMove(position) && this.doesCaptureOpposingPlayerPiece(position, player);
     }
 
-    public isLegalMove(position: number[]): boolean {
-        return this._getPlayerAtPosition(position) === PLAYER.INVALID_PLAYER;
-    }
-
-    public isValidPosition(position: number[]): boolean {
-        return position[0] >= 0 &&
-            position[1] >= 0;
-    }
-
-    public updatePlayerAtPosition(player: PLAYER, position: number[]): void {
-        this.gameBoard[position[0]][position[1]] = player;
-    }
-
     // TODO: split this up
     public isCapturePieceAlongVector(vector: number[], position: number[], player: PLAYER): boolean {
         const comparisonPosition: number[] = this._calculateComparisonPositionFromPositionWithVector(position, vector);
@@ -97,6 +100,40 @@ class GameBoardController {
         }
 
         return comparisonPlayer === player;
+    }
+
+    public isLegalMove(position: number[]): boolean {
+        return this._getPlayerAtPosition(position) === PLAYER.INVALID_PLAYER;
+    }
+
+    public isValidPosition(position: number[]): boolean {
+        return position[0] >= 0 &&
+            position[1] >= 0;
+    }
+
+    public reset(): void {
+        this.gameBoard = GAME_BOARD_INITIAL_STATE;
+    }
+
+    public resetCacheAfterTurn(): void {
+        this._vectorsToOpponentCache = [];
+    }
+
+    public updatePlayerAtPosition(player: PLAYER, position: number[]): void {
+        this.gameBoard[position[0]][position[1]] = player;
+    }
+
+    public updateGameBoardStateForPendingMove(player: PLAYER, position: number[]): void {
+        let positionsToUpdate: number[][] = [];
+
+        for (let i = 0; i < this._vectorsToOpponentCache.length; i++) {
+            const vector: number[] = this._vectorsToOpponentCache[i];
+            const positionsAlongVectorToPlayer: number[][] = this.collectPositionsAlongVectorUntilPlayer(vector, position, player, []);
+
+            positionsToUpdate = positionsToUpdate.concat(positionsAlongVectorToPlayer);
+        }
+
+        this._updateGameBoardWithCapturedPieces(player, positionsToUpdate);
     }
 
     private _calculateComparisonPositionFromPositionWithVector(position: number[], vector: number[]): number[] {
@@ -124,6 +161,14 @@ class GameBoardController {
         }
 
         return opposingPlayer;
+    }
+
+    private _updateGameBoardWithCapturedPieces(player: PLAYER, positionsToUpdate: number[][]): void {
+        for (let i = 0; i < positionsToUpdate.length; i++) {
+            const position: number[] = positionsToUpdate[i];
+
+            this.updatePlayerAtPosition(player, position);
+        }
     }
 
 }

@@ -40,7 +40,7 @@ class StageViewController {
     private _createChildren(): this {
         for (let y: number = 0; y < STAGE.COLUMN_CELL_COUNT; y++) {
             for (let x: number = 0; x < STAGE.ROW_CELL_COUNT; x++) {
-                const playerAtCell: PLAYER = this._gameBoardState[x][y];
+                const playerAtCell: PLAYER = this._gameBoardState[y][x];
                 const stageCellModel: StageCellModel = new StageCellModel(x, y, playerAtCell, this._onClickCellHandler);
 
                 this._element.appendChild(stageCellModel.element);
