@@ -4,11 +4,26 @@
 }
 
 .playerList-item {
+    align-items: center;
     display: flex;
     flex-basis: 50%;
     justify-content: space-evenly;
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.playerList-item-playerColor_playerOne,
+.playerList-item-playerColor_playerTwo {
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+}
+.playerList-item-playerColor_playerOne {
+    background-color: #ffffff;
+}
+
+.playerList-item-playerColor_playerTwo {
+    background-color: #000000;
 }
 
 .mix-playerList-item_isActive {
