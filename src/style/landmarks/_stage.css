@@ -16,3 +16,9 @@
     fill: lightslategrey;
     stroke-width: 2;
 }
+
+.stage-cell-availableMove {
+    fill: rgba(0, 0, 0, 0.5);
+    stroke: rgba(200, 200, 200, 0.3);
+    stroke-width: 5px;
+}

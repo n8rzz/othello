@@ -23,12 +23,6 @@ class StageViewController {
             ._createChildren();
     }
 
-    public addPlayerToCell(player: number, cellId: string): void {
-        const stageCellModel: StageCellModel = this._items.findCellById(cellId);
-
-        stageCellModel.addGamePiece(player);
-    }
-
     public updateWithGameBoardState(gameBoardState: number[][]): void {
         for (let y = 0; y < gameBoardState.length; y++) {
             for (let x = 0; x < gameBoardState[y].length; x++) {

@@ -5,6 +5,7 @@ import {
 import { STAGE } from '../constants/stageConstants';
 
 const CELL_CLASSNAME = 'stage-cell';
+const AVAILABLE_MOVE_CLASSNAME = 'stage-cell-availableMove';
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
 class StageCellModel {
@@ -13,9 +14,12 @@ class StageCellModel {
     public element: SVGElement = null;
     public gameCellElement: SVGRectElement = null;
     public gamePieceElement: SVGCircleElement = null;
+    public availableMoveElement: SVGCircleElement = null;
     public id: string = '';
     public isActive: boolean = false;
-    public gamePieceRadius: number = -1;
+    public isAvailableMove: boolean = false;
+    public gamePieceElementRadius: number = -1;
+    public availableMoveElementRadius: number = 15;
     public height: number = -1;
     public width: number = -1;
     public x: number = -1;
@@ -31,7 +35,7 @@ class StageCellModel {
         player: PLAYER,
         onClickHandler: (event: UIEvent) => void,
     ) {
-        this.gamePieceRadius = (STAGE.CELL_WIDTH - 10) * 0.5;
+        this.gamePieceElementRadius = (STAGE.CELL_WIDTH - 10) * 0.5;
         this.height = STAGE.CELL_HEIGHT;
         this.width = STAGE.CELL_WIDTH;
         this.x = x;
@@ -81,6 +85,7 @@ class StageCellModel {
     private _createChildren(): this {
         this._buildCellElement();
         this._buildGamePieceElement();
+        this._buildAvailableMoveElement();
         this._buildCellGroupElement();
 
         if (this._playerId !== PLAYER.INVALID_PLAYER) {
@@ -133,8 +138,16 @@ class StageCellModel {
         this.gamePieceElement = document.createElementNS(SVG_NAMESPACE, 'circle');
         this.gamePieceElement.setAttributeNS(null, 'cx', `${this._calculateXPositionForPlayerPiece()}`);
         this.gamePieceElement.setAttributeNS(null, 'cy', `${this._calculateYPositionForPlayerPiece()}`);
-        this.gamePieceElement.setAttributeNS(null, 'r', `${this.gamePieceRadius}`);
+        this.gamePieceElement.setAttributeNS(null, 'r', `${this.gamePieceElementRadius}`);
         this.gamePieceElement.classList.add('playerPiece');
+    }
+
+    private _buildAvailableMoveElement(): void {
+        this.availableMoveElement = document.createElementNS(SVG_NAMESPACE, 'circle');
+        this.availableMoveElement.setAttributeNS(null, 'cx', `${this._calculateXPositionForPlayerPiece()}`);
+        this.availableMoveElement.setAttributeNS(null, 'cy', `${this._calculateYPositionForPlayerPiece()}`);
+        this.availableMoveElement.setAttributeNS(null, 'r', `${this.availableMoveElementRadius}`);
+        this.availableMoveElement.classList.add(AVAILABLE_MOVE_CLASSNAME);
     }
 
     private _calculateXPosition(): number {
