@@ -10,6 +10,26 @@ class GameBoardController {
 
     private _vectorsToOpponentCache: number[][] = [];
 
+    public collectAvailableMovesForPlayer(player: PLAYER): number[][] {
+        const availableMoveList: number[][] = [];
+
+        for (let i = 0; i < this.gameBoard.length; i++) {
+            for (let j = 0; j < this.gameBoard[i].length; j++) {
+                const position = [i, j];
+
+                if (this._getPlayerAtPosition(position) !== PLAYER.INVALID_PLAYER) {
+                    continue;
+                }
+
+                if (this._isCapturablePosition(position, player)) {
+                    availableMoveList.push(position);
+                }
+            }
+        }
+
+        return availableMoveList;
+    }
+
     public collectPositionsAlongVectorUntilPlayer(vector: number[], position: number[], player: PLAYER, sum: number[][]): number[][] {
         const comparisonPosition: number[] = this._calculateComparisonPositionFromPositionWithVector(position, vector);
         const comparisonPlayer: PLAYER = this._getPlayerAtPosition(comparisonPosition);
@@ -165,6 +185,21 @@ class GameBoardController {
         }
 
         return opposingPlayer;
+    }
+
+    private _isCapturablePosition(position: number[], player: PLAYER): boolean {
+        const availableMoveList: number[][] = [];
+
+        for (let v = 0; v < VECTOR_FROM_POSITION.length; v++) {
+            const vector = VECTOR_FROM_POSITION[v];
+            const foundPositionsForVector: number[][] = this.collectPositionsAlongVectorUntilPlayer(vector, position, player, []);
+
+            if (foundPositionsForVector.length === 0) {
+                continue;
+            }
+
+            return true;
+        }
     }
 
     private _updateGameBoardWithCapturedPieces(player: PLAYER, positionsToUpdate: number[][]): void {
