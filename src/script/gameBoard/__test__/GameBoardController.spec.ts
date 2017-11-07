@@ -28,6 +28,20 @@ describe('GameBoardController', () => {
         ).to.be.false;
     });
 
+    it('.isValidPosition() returns false when passed a number < 0', () => {
+        const controller = new GameBoardController();
+
+        expect(controller.isValidPosition([-3, 3])).to.be.false;
+        expect(controller.isValidPosition([3, -3])).to.be.false;
+    });
+
+    it('.isValidPosition() returns false when passed a number > number of columns/rows in gameBoard', () => {
+        const controller = new GameBoardController();
+
+        expect(controller.isValidPosition([10, 3])).to.be.false;
+        expect(controller.isValidPosition([3, 10])).to.be.false;
+    });
+
     it('.doesCaptureOpposingPlayerPiece() returns false when a given move does not capture at least one opposing piece', () => {
         const positionMock = [1, 1];
         const playerMock = 0;

@@ -30,7 +30,26 @@ class StageViewController {
     }
 
     public updateWithGameBoardState(gameBoardState: number[][]): void {
-        // update cells based on current state
+        for (let y = 0; y < gameBoardState.length; y++) {
+            for (let x = 0; x < gameBoardState[y].length; x++) {
+                const player: PLAYER = gameBoardState[y][x];
+
+                if (player === PLAYER.INVALID_PLAYER) {
+                    continue;
+                }
+
+                const cellPosition: number[] = [y, x];
+                const stageCellModel: StageCellModel = this._items.findCellByPosition(cellPosition);
+
+                if (!stageCellModel.isActive) {
+                    stageCellModel.addGamePiece(player);
+
+                    continue;
+                }
+
+                stageCellModel.updateOwner(player);
+            }
+        }
     }
 
     private _init(): this {

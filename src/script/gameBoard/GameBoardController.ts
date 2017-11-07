@@ -21,7 +21,9 @@ class GameBoardController {
         if (comparisonPlayer === this._getOpposingPlayerNumber(player)) {
             sum.push(comparisonPosition);
 
-            this.collectPositionsAlongVectorUntilPlayer(vector, comparisonPosition, player, sum);
+            return this.collectPositionsAlongVectorUntilPlayer(vector, comparisonPosition, player, sum);
+        } else if (comparisonPlayer === PLAYER.INVALID_PLAYER) {
+            return [];
         }
 
         return sum;
@@ -108,7 +110,9 @@ class GameBoardController {
 
     public isValidPosition(position: number[]): boolean {
         return position[0] >= 0 &&
-            position[1] >= 0;
+            position[0] < this.gameBoard.length &&
+            position[1] >= 0 &&
+            position[1] < this.gameBoard[0].length;
     }
 
     public reset(): void {

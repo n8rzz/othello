@@ -38,16 +38,15 @@ class GameController {
             return;
         }
 
-        this._gameBoardController.updateGameBoardStateForPendingMove(this.activePlayer, position);
-        this._gameBoardController.updatePlayerAtPosition(this.activePlayer, position);
-        this._stageViewController.addPlayerToCell(this.activePlayer, cellId);
-        this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
-
-        this._completeCurrentTurn();
+        this._completeTurn(position, cellId);
         this._moveToNextTurn();
     }
 
-    private _completeCurrentTurn(): void {
+    private _completeTurn(position: number[], cellId: string): void {
+        this._gameBoardController.updateGameBoardStateForPendingMove(this.activePlayer, position);
+        this._gameBoardController.updatePlayerAtPosition(this.activePlayer, position);
+        // this._stageViewController.addPlayerToCell(this.activePlayer, cellId);
+        this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
         this._gameBoardController.resetCacheAfterTurn();
     }
 

@@ -54,6 +54,26 @@ class StageCellModel {
         this.element.appendChild(this.gamePieceElement);
     }
 
+    public togglePlayer(currentPlayer: number): void {
+        if (this._hasClass(PLAYER_PIECE_CLASSNAME[0])) {
+            this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[0]);
+            this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[1]);
+
+            return;
+        }
+
+        this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[1]);
+        this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[0]);
+    }
+
+    public updateOwner(player: PLAYER): void {
+        if (this._hasClass(PLAYER_PIECE_CLASSNAME[player])) {
+            return;
+        }
+
+        this.togglePlayer(player);
+    }
+
     private _init(): this {
         return this;
     }
@@ -88,18 +108,6 @@ class StageCellModel {
 
         return this;
     }
-
-    // public togglePlayer(currentPlayer: number): void {
-    //     if (this._hasClass(PLAYER_PIECE_CLASSNAME[0])) {
-    //         this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[0]);
-    //         this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[1]);
-
-    //         return;
-    //     }
-
-    //     this.gamePieceElement.classList.remove(PLAYER_PIECE_CLASSNAME[1]);
-    //     this.gamePieceElement.classList.add(PLAYER_PIECE_CLASSNAME[0]);
-    // }
 
     private _buildCellGroupElement(): void {
         this.element = document.createElementNS(SVG_NAMESPACE, 'g');
