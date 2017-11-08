@@ -18,7 +18,8 @@
 }
 
 .stage-cell-availableMove {
-    fill: rgba(0, 0, 0, 0.5);
-    stroke: rgba(200, 200, 200, 0.3);
+    cursor: pointer;
+    fill: rgba(255, 0, 255, 0.5);
+    stroke: rgba(10, 10, 10, 0.2);
     stroke-width: 5px;
 }

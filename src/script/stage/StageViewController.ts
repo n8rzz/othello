@@ -23,17 +23,31 @@ class StageViewController {
             ._createChildren();
     }
 
+    public updateWithAvailableMoves(availableMovesForPlayer: number[][]): void {
+        if (availableMovesForPlayer.length === 0) {
+            return;
+        }
+
+        for (let i = 0; i < availableMovesForPlayer.length; i++) {
+            const cellPosition = availableMovesForPlayer[i];
+            const stageCellModel: StageCellModel = this._items.findCellByPosition(cellPosition);
+
+            stageCellModel.addAvailableMoveIndicator();
+        }
+    }
+
     public updateWithGameBoardState(gameBoardState: number[][]): void {
         for (let y = 0; y < gameBoardState.length; y++) {
             for (let x = 0; x < gameBoardState[y].length; x++) {
                 const player: PLAYER = gameBoardState[y][x];
+                const cellPosition: number[] = [y, x];
+                const stageCellModel: StageCellModel = this._items.findCellByPosition(cellPosition);
+
+                stageCellModel.removeAvailableMoveIndicator();
 
                 if (player === PLAYER.INVALID_PLAYER) {
                     continue;
                 }
-
-                const cellPosition: number[] = [y, x];
-                const stageCellModel: StageCellModel = this._items.findCellByPosition(cellPosition);
 
                 if (!stageCellModel.isActive) {
                     stageCellModel.addGamePiece(player);

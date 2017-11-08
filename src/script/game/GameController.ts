@@ -51,6 +51,10 @@ class GameController {
 
     private _moveToNextTurn(): void {
         this._toggleActivePlayer();
+
+        const availableMovesForPlayer: number[][] = this._gameBoardController.collectAvailableMovesForPlayer(this.activePlayer);
+        this._stageViewController.updateWithAvailableMoves(availableMovesForPlayer);
+
         this._updateScoreboardView();
     }
 

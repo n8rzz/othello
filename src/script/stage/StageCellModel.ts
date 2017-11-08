@@ -14,12 +14,12 @@ class StageCellModel {
     public element: SVGElement = null;
     public gameCellElement: SVGRectElement = null;
     public gamePieceElement: SVGCircleElement = null;
-    public availableMoveElement: SVGCircleElement = null;
+    public availableMoveIndicatorElement: SVGCircleElement = null;
     public id: string = '';
     public isActive: boolean = false;
     public isAvailableMove: boolean = false;
     public gamePieceElementRadius: number = -1;
-    public availableMoveElementRadius: number = 15;
+    public availableMoveIndicatorElementRadius: number = 15;
     public height: number = -1;
     public width: number = -1;
     public x: number = -1;
@@ -56,6 +56,20 @@ class StageCellModel {
 
         this.gamePieceElement.classList.add(playerClassname);
         this.element.appendChild(this.gamePieceElement);
+    }
+
+    public addAvailableMoveIndicator(): void {
+        this.isAvailableMove = true;
+        this.element.appendChild(this.availableMoveIndicatorElement);
+    }
+
+    public removeAvailableMoveIndicator(): void {
+        if (!this.isAvailableMove) {
+            return;
+        }
+
+        this.isAvailableMove = false;
+        this.element.removeChild(this.availableMoveIndicatorElement);
     }
 
     public togglePlayer(currentPlayer: number): void {
@@ -143,11 +157,11 @@ class StageCellModel {
     }
 
     private _buildAvailableMoveElement(): void {
-        this.availableMoveElement = document.createElementNS(SVG_NAMESPACE, 'circle');
-        this.availableMoveElement.setAttributeNS(null, 'cx', `${this._calculateXPositionForPlayerPiece()}`);
-        this.availableMoveElement.setAttributeNS(null, 'cy', `${this._calculateYPositionForPlayerPiece()}`);
-        this.availableMoveElement.setAttributeNS(null, 'r', `${this.availableMoveElementRadius}`);
-        this.availableMoveElement.classList.add(AVAILABLE_MOVE_CLASSNAME);
+        this.availableMoveIndicatorElement = document.createElementNS(SVG_NAMESPACE, 'circle');
+        this.availableMoveIndicatorElement.setAttributeNS(null, 'cx', `${this._calculateXPositionForPlayerPiece()}`);
+        this.availableMoveIndicatorElement.setAttributeNS(null, 'cy', `${this._calculateYPositionForPlayerPiece()}`);
+        this.availableMoveIndicatorElement.setAttributeNS(null, 'r', `${this.availableMoveIndicatorElementRadius}`);
+        this.availableMoveIndicatorElement.classList.add(AVAILABLE_MOVE_CLASSNAME);
     }
 
     private _calculateXPosition(): number {
