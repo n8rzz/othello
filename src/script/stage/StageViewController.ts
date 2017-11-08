@@ -24,10 +24,6 @@ class StageViewController {
     }
 
     public updateWithAvailableMoves(availableMovesForPlayer: number[][]): void {
-        if (availableMovesForPlayer.length === 0) {
-            return;
-        }
-
         for (let i = 0; i < availableMovesForPlayer.length; i++) {
             const cellPosition = availableMovesForPlayer[i];
             const stageCellModel: StageCellModel = this._items.findCellByPosition(cellPosition);
@@ -65,8 +61,8 @@ class StageViewController {
     }
 
     private _createChildren(): this {
-        for (let y: number = 0; y < STAGE.COLUMN_CELL_COUNT; y++) {
-            for (let x: number = 0; x < STAGE.ROW_CELL_COUNT; x++) {
+        for (let y: number = 0; y < this._gameBoardState.length; y++) {
+            for (let x: number = 0; x < this._gameBoardState[0].length; x++) {
                 const playerAtCell: PLAYER = this._gameBoardState[y][x];
                 const stageCellModel: StageCellModel = new StageCellModel(x, y, playerAtCell, this._onClickCellHandler);
 

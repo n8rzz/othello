@@ -124,6 +124,26 @@ class GameBoardController {
         return comparisonPlayer === player;
     }
 
+    public isGameComplete(): boolean {
+        let sum: number = 0;
+        const pieceCount: number = this.gameBoard.length * this.gameBoard[0].length;
+
+        for (let i = 0; i < this.gameBoard.length; i++) {
+            for (let j = 0; j < this.gameBoard[0].length; j++) {
+                const position: number[] = [i, j];
+                const playerAtPosition: PLAYER = this._getPlayerAtPosition(position);
+
+                if (playerAtPosition !== PLAYER.INVALID_PLAYER) {
+                    continue;
+                }
+
+                sum++;
+            }
+        }
+
+        return sum === 0;
+    }
+
     public isLegalMove(position: number[]): boolean {
         return this._getPlayerAtPosition(position) === PLAYER.INVALID_PLAYER;
     }

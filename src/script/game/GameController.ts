@@ -19,7 +19,6 @@ class GameController {
 
     public reset(): void {
         this._gameBoardController.reset();
-        // this._stageViewController.reset();
     }
 
     // Methods enclosed below are the main game loop methods
@@ -30,15 +29,19 @@ class GameController {
     // =====================================================
 
     public update(position: number[], cellId: string): void {
-        this._playerDidMove(position, cellId);
-    }
-
-    private _playerDidMove(position: number[], cellId: string): void {
         if (!this._gameBoardController.playerCanMoveToPosition(position, this.activePlayer)) {
             return;
         }
 
         this._completeTurn(position, cellId);
+        this._toggleActivePlayer();
+        this._updateScoreboardView();
+        this._moveToNextTurn();
+    }
+
+    public skipTurn(): void {
+        this._toggleActivePlayer();
+        this._updateScoreboardView();
         this._moveToNextTurn();
     }
 
@@ -50,12 +53,19 @@ class GameController {
     }
 
     private _moveToNextTurn(): void {
-        this._toggleActivePlayer();
+        if (this._gameBoardController.isGameComplete()) {
+            return this._completeGame();
+        }
 
         const availableMovesForPlayer: number[][] = this._gameBoardController.collectAvailableMovesForPlayer(this.activePlayer);
-        this._stageViewController.updateWithAvailableMoves(availableMovesForPlayer);
 
-        this._updateScoreboardView();
+        if (availableMovesForPlayer.length === 0) {
+            window.alert('No Availalbe Moves, Skipping Turn');
+
+            return this.skipTurn();
+        }
+
+        this._stageViewController.updateWithAvailableMoves(availableMovesForPlayer);
     }
 
     // =====================================================
@@ -70,8 +80,13 @@ class GameController {
         this._scoreboardView = new ScoreboardView(scoreboardElement, this.activePlayer);
 
         this._updateScoreboardView();
+        this._moveToNextTurn();
 
         return this;
+    }
+
+    private _completeGame(): void {
+        window.alert('One of you won, probably the one with the most pieces');
     }
 
     private _countPlayerPeices(player: PLAYER): number {
