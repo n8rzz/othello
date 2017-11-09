@@ -1,5 +1,6 @@
 import GameBoardController from '../gameBoard/GameBoardController';
 import GameCompleteView from '../gameComplete/GameCompleteView';
+import PlayerMoveHistory from '../playerMoveHistory/PlayerMoveHistory';
 import StageViewController from '../stage/StageViewController';
 import ScoreboardView from '../scoreboard/ScoreboardView';
 import { idToPositionTranslator } from '../translator/stageCellTranslators';
@@ -9,9 +10,10 @@ class GameController {
     public activePlayer: number = 0;
 
     private _gameBoardController: GameBoardController = null;
-    private _stageViewController: StageViewController = null;
-    private _scoreboardView: ScoreboardView = null;
     private _gameCompleteView: GameCompleteView = null;
+    private _playerMoveHistory: PlayerMoveHistory = null;
+    private _scoreboardView: ScoreboardView = null;
+    private _stageViewController: StageViewController = null;
     private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
 
     constructor(scoreboardElement: HTMLElement, stageElement: SVGElement) {
@@ -21,6 +23,7 @@ class GameController {
 
     public reset(): void {
         this._gameBoardController.reset();
+        this._playerMoveHistory.reset();
     }
 
     // Methods enclosed below are the main game loop methods
@@ -51,6 +54,7 @@ class GameController {
         this._gameBoardController.updateGameBoardStateForPendingMove(this.activePlayer, position);
         this._gameBoardController.updatePlayerAtPosition(this.activePlayer, position);
         this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
+        this._playerMoveHistory.add(this.activePlayer, position, this._gameBoardController.capturedPieces);
         this._gameBoardController.resetCacheAfterTurn();
     }
 
@@ -81,6 +85,7 @@ class GameController {
         this._stageViewController = new StageViewController(stageElement, this._gameBoardController.gameBoard, this._onClickCellHandler);
         this._scoreboardView = new ScoreboardView(scoreboardElement, this.activePlayer);
         this._gameCompleteView = new GameCompleteView(stageElement);
+        this._playerMoveHistory = new PlayerMoveHistory();
 
         this._updateScoreboardView();
         this._moveToNextTurn();

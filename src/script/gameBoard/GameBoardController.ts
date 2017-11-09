@@ -8,6 +8,7 @@ import { PLAYER } from '../constants/playerConstants';
 class GameBoardController {
     public gameBoard: number[][] = GAME_BOARD_INITIAL_STATE;
 
+    public capturedPieces: number[][] = [];
     private _vectorsToOpponentCache: number[][] = [];
 
     public collectAvailableMovesForPlayer(player: PLAYER): number[][] {
@@ -161,6 +162,7 @@ class GameBoardController {
 
     public resetCacheAfterTurn(): void {
         this._vectorsToOpponentCache = [];
+        this.capturedPieces = [];
     }
 
     public updatePlayerAtPosition(player: PLAYER, position: number[]): void {
@@ -168,16 +170,16 @@ class GameBoardController {
     }
 
     public updateGameBoardStateForPendingMove(player: PLAYER, position: number[]): void {
-        let positionsToUpdate: number[][] = [];
+        let capturedPieces: number[][] = [];
 
         for (let i = 0; i < this._vectorsToOpponentCache.length; i++) {
             const vector: number[] = this._vectorsToOpponentCache[i];
             const positionsAlongVectorToPlayer: number[][] = this.collectPositionsAlongVectorUntilPlayer(vector, position, player, []);
 
-            positionsToUpdate = positionsToUpdate.concat(positionsAlongVectorToPlayer);
+            capturedPieces = capturedPieces.concat(positionsAlongVectorToPlayer);
         }
 
-        this._updateGameBoardWithCapturedPieces(player, positionsToUpdate);
+        this._updateGameBoardWithCapturedPieces(player, capturedPieces);
     }
 
     private _calculateComparisonPositionFromPositionWithVector(position: number[], vector: number[]): number[] {
@@ -222,9 +224,11 @@ class GameBoardController {
         }
     }
 
-    private _updateGameBoardWithCapturedPieces(player: PLAYER, positionsToUpdate: number[][]): void {
-        for (let i = 0; i < positionsToUpdate.length; i++) {
-            const position: number[] = positionsToUpdate[i];
+    private _updateGameBoardWithCapturedPieces(player: PLAYER, capturedPieces: number[][]): void {
+        this.capturedPieces = capturedPieces;
+
+        for (let i = 0; i < capturedPieces.length; i++) {
+            const position: number[] = capturedPieces[i];
 
             this.updatePlayerAtPosition(player, position);
         }
