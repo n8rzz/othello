@@ -1,4 +1,5 @@
 import GameBoardController from '../gameBoard/GameBoardController';
+import GameCompleteView from '../gameComplete/GameCompleteView';
 import StageViewController from '../stage/StageViewController';
 import ScoreboardView from '../scoreboard/ScoreboardView';
 import { idToPositionTranslator } from '../translator/stageCellTranslators';
@@ -10,6 +11,7 @@ class GameController {
     private _gameBoardController: GameBoardController = null;
     private _stageViewController: StageViewController = null;
     private _scoreboardView: ScoreboardView = null;
+    private _gameCompleteView: GameCompleteView = null;
     private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
 
     constructor(scoreboardElement: HTMLElement, stageElement: SVGElement) {
@@ -78,6 +80,7 @@ class GameController {
         this._gameBoardController = new GameBoardController();
         this._stageViewController = new StageViewController(stageElement, this._gameBoardController.gameBoard, this._onClickCellHandler);
         this._scoreboardView = new ScoreboardView(scoreboardElement, this.activePlayer);
+        this._gameCompleteView = new GameCompleteView(stageElement);
 
         this._updateScoreboardView();
         this._moveToNextTurn();
@@ -86,7 +89,7 @@ class GameController {
     }
 
     private _completeGame(): void {
-        window.alert('One of you won, probably the one with the most pieces');
+        this._gameCompleteView.showCompleteGameBanner(this.activePlayer);
     }
 
     private _countPlayerPeices(player: PLAYER): number {
