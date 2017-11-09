@@ -168,4 +168,24 @@ describe('GameBoardController', () => {
 
         expect(result).to.deep.eq(expectedResult);
     });
+
+    it('.isGameComplete() returns a list of available positions for a player to make move', () => {
+        const expectedResult = [[2, 4], [3, 5], [4, 2], [5, 3]];
+        const playerMock = 0;
+        const controller = new GameBoardController();
+        // tslint:disable whitespace
+        controller.gameBoard = [
+            [0,0,0,0,0,0,0,-1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1]
+        ];
+        // tslint:enable whitespace
+
+        expect(controller.isGameComplete()).to.be.true;
+    });
 });

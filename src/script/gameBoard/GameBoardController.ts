@@ -141,7 +141,7 @@ class GameBoardController {
             }
         }
 
-        return sum === 0;
+        return sum <= 1;
     }
 
     public isLegalMove(position: number[]): boolean {
