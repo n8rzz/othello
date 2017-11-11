@@ -14,6 +14,7 @@ class GameController {
     private _playerMoveHistory: PlayerMoveHistory = null;
     private _scoreboardView: ScoreboardView = null;
     private _stageViewController: StageViewController = null;
+    private _playerShouldPassTurn: boolean = false;
     private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
 
     constructor(scoreboardElement: HTMLElement, stageElement: SVGElement) {
