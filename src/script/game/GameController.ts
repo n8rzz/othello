@@ -25,6 +25,8 @@ class GameController {
     public reset(): void {
         this._gameBoardController.reset();
         this._playerMoveHistory.reset();
+        this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
+        this._moveToNextTurn();
     }
 
     // Methods enclosed below are the main game loop methods

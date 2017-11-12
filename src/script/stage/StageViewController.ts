@@ -2,6 +2,7 @@ import { PLAYER } from '../constants/playerConstants';
 import StageCellCollection from './StageCellCollection';
 import StageCellModel from './StageCellModel';
 import { STAGE } from '../constants/stageConstants';
+import { platform } from 'os';
 
 class StageViewController {
     private _element: SVGElement;
@@ -41,7 +42,14 @@ class StageViewController {
 
                 stageCellModel.removeAvailableMoveIndicator();
 
+                // TODO: simplify these if blocks
+                if (player === PLAYER.INVALID_PLAYER && !stageCellModel.isActive) {
+                    continue;
+                }
+
                 if (player === PLAYER.INVALID_PLAYER) {
+                    stageCellModel.removeGamePiece();
+
                     continue;
                 }
 

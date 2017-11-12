@@ -1,15 +1,16 @@
 import { positionToIdTranslator } from '../translator/stageCellTranslators';
-import {
-    GAME_BOARD_INITIAL_STATE,
-    VECTOR_FROM_POSITION,
-} from '../constants/gameBoardConstants';
+import { VECTOR_FROM_POSITION } from '../constants/gameBoardConstants';
 import { PLAYER } from '../constants/playerConstants';
 
 class GameBoardController {
-    public gameBoard: number[][] = GAME_BOARD_INITIAL_STATE;
+    public gameBoard: number[][] = [];
 
     public capturedPieces: number[][] = [];
     private _vectorsToOpponentCache: number[][] = [];
+
+    constructor() {
+        this.gameBoard = this._buildGameBoardInitialState();
+    }
 
     public collectAvailableMovesForPlayer(player: PLAYER): number[][] {
         const availableMoveList: number[][] = [];
@@ -157,7 +158,7 @@ class GameBoardController {
     }
 
     public reset(): void {
-        this.gameBoard = GAME_BOARD_INITIAL_STATE;
+        this.gameBoard = this._buildGameBoardInitialState();
     }
 
     public resetCacheAfterTurn(): void {
@@ -180,6 +181,19 @@ class GameBoardController {
         }
 
         this._updateGameBoardWithCapturedPieces(player, capturedPieces);
+    }
+
+    private _buildGameBoardInitialState(): number[][] {
+        return [
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.ONE, PLAYER.TWO, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.TWO, PLAYER.ONE, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+            [PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER, PLAYER.INVALID_PLAYER],
+        ];
     }
 
     private _calculateComparisonPositionFromPositionWithVector(position: number[], vector: number[]): number[] {

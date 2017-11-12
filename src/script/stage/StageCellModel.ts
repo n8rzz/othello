@@ -58,6 +58,15 @@ class StageCellModel {
         this.element.appendChild(this.gamePieceElement);
     }
 
+    public removeGamePiece(): void {
+        this.isActive = false;
+        this._playerId = PLAYER.INVALID_PLAYER;
+        const playerClassname: string = PLAYER_PIECE_CLASSNAME[this._playerId];
+
+        this.gamePieceElement.classList.remove(playerClassname);
+        this.element.removeChild(this.gamePieceElement);
+    }
+
     public addAvailableMoveIndicator(): void {
         this.isAvailableMove = true;
         this.element.appendChild(this.availableMoveIndicatorElement);
@@ -124,6 +133,7 @@ class StageCellModel {
     private _destroy(): this {
         this.x = -1;
         this.y = -1;
+        this._playerId = PLAYER.INVALID_PLAYER;
 
         return this;
     }
