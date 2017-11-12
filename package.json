@@ -5,8 +5,8 @@
   "author": "Nate Geslin <teamtomkins23@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build:styles": "cp -R ./src/style/ ./dist/style/",
-    "build:scripts": "browserify -d src/script/app.ts -p [ tsify --noImplicitAny ] > dist/bundle.js",
+    "build:styles": "cp -R ./src/public/style/ ./dist/style/",
+    "build:scripts": "browserify -d src/public/script/app.ts -p [ tsify --noImplicitAny ] > dist/bundle.js",
     "build:client": "rm -rf ./dist && mkdir dist && yarn build:scripts && yarn build:styles",
     "test": "nyc mocha -r ts-node/register -r source-map-support/register -r jsdom-global/register src/**/*.spec.ts",
     "report": "nyc report --reporter=cobertura --reporter=lcov"
@@ -25,8 +25,12 @@
     "all": true
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.8",
     "@types/chai": "^4.0.4",
+    "@types/dotenv": "^4.0.2",
+    "@types/express": "^4.0.39",
     "@types/mocha": "^2.2.44",
+    "@types/morgan": "^1.7.35",
     "@types/sinon": "^2.3.7",
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
@@ -41,6 +45,10 @@
     "tsify": "^3.0.3"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "morgan": "^1.9.0",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   }
