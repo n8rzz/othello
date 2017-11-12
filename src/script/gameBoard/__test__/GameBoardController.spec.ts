@@ -68,7 +68,7 @@ describe('GameBoardController', () => {
         controller.updatePlayerAtPosition(1, [2, 3]);
 
         expect(controller.countPiecesForPlayer(0)).to.eq(2);
-        expect(controller.countPiecesForPlayer(1)).to.eq(4);
+        expect(controller.countPiecesForPlayer(1)).to.eq(3);
     });
 
     it('.findVectorsToOpposingPlayerPiece() returns an array of vectors to opposing pieces', () => {

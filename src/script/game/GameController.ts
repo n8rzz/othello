@@ -23,9 +23,12 @@ class GameController {
     }
 
     public reset(): void {
+        this.activePlayer = PLAYER.ONE;
+
         this._gameBoardController.reset();
         this._playerMoveHistory.reset();
         this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
+        this._updateScoreboardView();
         this._moveToNextTurn();
     }
 
