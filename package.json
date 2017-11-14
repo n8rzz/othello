@@ -10,7 +10,7 @@
     "build:client": "yarn build:scripts:client && yarn build:styles",
     "build:styles": "cp -R ./src/public/style/ ./dist/public/style/",
     "build:scripts:client": "browserify -d src/public/script/app.ts -p [ tsify --noImplicitAny ] > dist/public/script/bundle.js",
-    "build:scripts:server": "cp ./src/server.js ./dist/server.js && cp -r ./src/controllers/ ./dist/controllers",
+    "build:scripts:server": "cp ./src/server.js ./dist/server.js && cp -r ./src/controllers/ ./dist/controllers && cp -r ./src/auth/ ./dist/auth",
     "start": "nodemon dist/server.js",
     "test": "nyc mocha -r ts-node/register -r source-map-support/register -r jsdom-global/register src/**/*.spec.ts",
     "report": "nyc report --reporter=cobertura --reporter=lcov"
@@ -50,6 +50,8 @@
     "compression": "^1.7.1",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "grant-express": "^3.8.0",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-rc.4",
     "tslint": "^5.8.0",
