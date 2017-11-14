@@ -1,11 +1,11 @@
-import * as express from 'express';
-import * as compression from 'compression';
-import * as bodyParser from 'body-parser';
-import * as logger from 'morgan';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
+const express = require('express');
+const compression = require('compression');
+const bodyParser = require('body-parser');
+const logger = require('morgan');
+const dotenv = require('dotenv');
+const path = require('path');
 
-import * as homeController from './controllers/home.controller';
+const homeController = require('./controllers/home.controller');
 
 dotenv.config({ path: '.env.development' });
 

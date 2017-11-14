@@ -10,8 +10,7 @@
     "build:client": "yarn build:scripts:client && yarn build:styles",
     "build:styles": "cp -R ./src/public/style/ ./dist/public/style/",
     "build:scripts:client": "browserify -d src/public/script/app.ts -p [ tsify --noImplicitAny ] > dist/public/script/bundle.js",
-
-    "build:scripts:server": "tsc --p tsconfig.server.json",
+    "build:scripts:server": "cp ./src/server.js ./dist/server.js && cp -r ./src/controllers/ ./dist/controllers",
     "start": "nodemon dist/server.js",
     "test": "nyc mocha -r ts-node/register -r source-map-support/register -r jsdom-global/register src/**/*.spec.ts",
     "report": "nyc report --reporter=cobertura --reporter=lcov"
@@ -30,14 +29,8 @@
     "all": true
   },
   "devDependencies": {
-    "@types/body-parser": "^1.16.8",
     "@types/chai": "^4.0.4",
-    "@types/compression": "^0.0.35",
-    "@types/dotenv": "^4.0.2",
-    "@types/express": "^4.0.39",
     "@types/mocha": "^2.2.44",
-    "@types/morgan": "^1.7.35",
-    "@types/node": "^8.0.51",
     "@types/sinon": "^2.3.7",
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
