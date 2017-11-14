@@ -9,8 +9,8 @@
     "clean": "rm -rf ./dist && mkdir -p dist/public/ && mkdir -p dist/public/script/",
     "build:client": "yarn build:scripts:client && yarn build:styles",
     "build:styles": "cp -R ./src/public/style/ ./dist/public/style/",
-    "build:scripts:client": "browserify -d src/public/script/app.ts -p [ tsify --noImplicitAny ] > dist/public/script/bundle.js",
-    "build:scripts:server": "cp ./src/server.js ./dist/server.js && cp -r ./src/controllers/ ./dist/controllers && cp -r ./src/auth/ ./dist/auth",
+    "build:scripts:client": "sh ./bin/buildClient.sh",
+    "build:scripts:server": "sh ./bin/buildServer.sh",
     "start": "nodemon dist/server.js",
     "test": "nyc mocha -r ts-node/register -r source-map-support/register -r jsdom-global/register src/**/*.spec.ts",
     "report": "nyc report --reporter=cobertura --reporter=lcov"
@@ -46,6 +46,7 @@
     "tsify": "^3.0.3"
   },
   "dependencies": {
+    "@purest/providers": "^1.0.1",
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
     "dotenv": "^4.0.0",
@@ -54,6 +55,8 @@
     "grant-express": "^3.8.0",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-rc.4",
+    "purest": "^3.1.0",
+    "request-promise": "^4.2.2",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   }

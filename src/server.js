@@ -12,7 +12,7 @@ const Grant = require('grant-express');
 const grantConfig = require('../config/grant.config');
 const grant = new Grant(grantConfig[process.env.NODE_ENV]);
 
-const homeController = require('./controllers/home.controller');
+const homeController = require('./home/home.controller');
 const authController = require('./auth/auth.controller');
 
 const app = express();
@@ -36,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 app.get('/', homeController.index);
 
 // api controllers
+
 // oauth
 app.get('/handle_google_callback', authController.handleGoogleCallback);
 app.get('/handle_twitter_callback', authController.handleTwitterCallback);
