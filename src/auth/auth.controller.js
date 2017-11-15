@@ -8,17 +8,63 @@ const twitter = purest({
     config
 });
 
-const handleGoogleCallback = function handleGoogleCallback(req, res) {
+const githubCallbackHandler = function githubCallbackHandler(req, res) {
+    const userProfile = githubTokenToProfile(req.query);
+
+    console.log('+++', userProfile);
+
+    res.end(JSON.stringify(req.query, null, 2));
+};
+
+const googleCallbackHandler = function googleCallbackHandler(req, res) {
     const userProfile = googleTokenToProfile(req.query);
 
     res.end(JSON.stringify(req.query, null, 2));
 };
 
-const handleTwitterCallback = function handleTwitterCallback(req, res) {
+const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
     const userProfile = twitterTokenToProfile(req.query);
 
     res.end(JSON.stringify(req.query, null, 2));
 };
+
+
+// {
+//     "access_token": string,
+//     "raw": {
+//         "access_token": string,
+//         "scope": sting,
+//         "token_type": string
+//     }
+// }
+function githubTokenToProfile(oauthSuccessResponse) {
+    const options = {
+        url: `https://api.github.com/user?access_token=${oauthSuccessResponse.access_token}`,
+        headers: {
+            'User-Agent': 'othello23'
+        }
+    };
+
+    return request(options, function(err, res, body) {
+        console.log('+++', JSON.parse(body));
+    });
+}
+
+// {
+//     "access_token": string,
+//     "raw": {
+//         "access_token": string
+//         "expires_in": string
+//         "id_token": string
+//         "token_type": string
+//     }
+// }
+function googleTokenToProfile(oauthSuccessResponse) {
+    const verifyToken = _verifyGoogleToken(oauthSuccessResponse);
+
+    verifyToken.then((tokenResponse) => _verifyTokenResponseHandler(tokenResponse, oauthSuccessResponse.access_token))
+        .catch((error) => { throw error; });
+}
 
 // {
 //     "access_token": string,
@@ -43,22 +89,6 @@ function twitterTokenToProfile(oauthSuccessResponse) {
         });
 }
 
-// {
-//     "access_token": string,
-//     "raw": {
-//         "access_token": string
-//         "expires_in": string
-//         "id_token": string
-//         "token_type": string
-//     }
-// }
-function googleTokenToProfile(oauthSuccessResponse) {
-    const verifyToken = _verifyGoogleToken(oauthSuccessResponse);
-
-    verifyToken.then((tokenResponse) => _verifyTokenResponseHandler(tokenResponse, oauthSuccessResponse.access_token))
-        .catch((error) => { throw error; });
-}
-
 function _verifyTokenResponseHandler(tokenResponse, accessToken) {
     const userInfo = _requestGoogleUserInfo(accessToken);
 
@@ -78,8 +108,9 @@ function _requestGoogleUserInfo(accessToken) {
 
 
 module.exports = {
-    handleGoogleCallback: handleGoogleCallback,
-    handleTwitterCallback: handleTwitterCallback,
+    githubCallbackHandler: githubCallbackHandler,
+    googleCallbackHandler: googleCallbackHandler,
+    twitterCallbackHandler: twitterCallbackHandler,
 };
 
 

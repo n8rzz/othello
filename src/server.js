@@ -38,8 +38,9 @@ app.get('/', homeController.index);
 // api controllers
 
 // oauth
-app.get('/handle_google_callback', authController.handleGoogleCallback);
-app.get('/handle_twitter_callback', authController.handleTwitterCallback);
+app.get('/handle_github_callback', authController.githubCallbackHandler);
+app.get('/handle_google_callback', authController.googleCallbackHandler);
+app.get('/handle_twitter_callback', authController.twitterCallbackHandler);
 
 app.listen(app.get('port'), () => {
     console.log(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'));

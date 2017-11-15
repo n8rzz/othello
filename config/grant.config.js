@@ -4,6 +4,14 @@ module.exports = {
             protocol: 'http',
             host: 'dummy.com:4321'
         },
+        github: {
+            key: process.env.GITHUB_OAUTH_KEY,
+            secret: process.env.GITHUB_OAUTH_SECRET,
+            callback: '/handle_github_callback',
+            scope: [
+                'read:user'
+            ]
+        },
         google: {
             key: process.env.GOOGLE_OAUTH_KEY,
             secret: process.env.GOOGLE_OAUTH_SECRET,
@@ -24,6 +32,14 @@ module.exports = {
         server: {
             protocol: 'http',
             host: 'dummy.com:4321'
+        },
+        github: {
+            key: process.env.GITHUB_OAUTH_KEY,
+            secret: process.env.GITHUB_OAUTH_SECRET,
+            callback: '/handle_github_callback',
+            scope: [
+                'user'
+            ]
         },
         google: {
             key: process.env.GOOGLE_OAUTH_KEY,
