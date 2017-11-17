@@ -10,6 +10,7 @@
     box-sizing: border-box;
     color: #ffffff;
     display: flex;
+    margin: 0 auto;
     padding: 0;
     text-decoration: none;
     width: 250px;
