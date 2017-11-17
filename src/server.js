@@ -34,6 +34,7 @@ app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }))
 
 // controllers
 app.get('/', homeController.index);
+app.get('/login', homeController.login);
 
 // api controllers
 

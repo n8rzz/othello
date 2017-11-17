@@ -1,6 +1,7 @@
-/** * GET /
+/**
+ * * GET /
  *
- * Home page
+ * Home view
  */
 const index = function index(req, res) {
     res.render('home', {
@@ -8,6 +9,18 @@ const index = function index(req, res) {
     });
 }
 
+/**
+ * * GET /login
+ *
+ * Login view
+ */
+const login = function login(req, res) {
+    res.render('account/login', {
+        title: 'Login',
+    });
+}
+
 module.exports = {
     index: index,
+    login: login,
 };

@@ -1,0 +1,12 @@
+.split {
+    border-radius: 8px;
+    box-shadow: 3px 3px 33px 0px rgba(0, 0, 0, 0.05);
+    display: flex;
+    margin: 0 auto;
+    max-width: 60%;
+}
+
+.split-left,
+.split-right {
+    flex-grow: 1;
+}

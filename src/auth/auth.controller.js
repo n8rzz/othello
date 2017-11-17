@@ -28,7 +28,6 @@ const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
     res.end(JSON.stringify(req.query, null, 2));
 };
 
-
 // {
 //     "access_token": string,
 //     "raw": {

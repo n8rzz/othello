@@ -5,8 +5,9 @@
   "author": "Nate Geslin <teamtomkins23@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run clean && npm run build:client && npm run build:scripts:server",
+    "build": "sh ./bin/build.sh",
     "clean": "rm -rf ./dist && mkdir -p dist/public/ && mkdir -p dist/public/script/",
+    "copy:assets": "cp -R ./src/public/media/ ./dist/public/media/",
     "build:client": "yarn build:scripts:client && yarn build:styles",
     "build:styles": "cp -R ./src/public/style/ ./dist/public/style/",
     "build:scripts:client": "sh ./bin/buildClient.sh",

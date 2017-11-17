@@ -1,0 +1,28 @@
+extends ../layout_static
+
+block content
+    div.wrapper.wrapper-xlarge
+        div.split
+            div.split-left
+                div.pane
+                    div.pane-hd
+                        h1.hdg.hdg-h1 Othello
+                    div.pane-bd
+                        div {{IMAGE}}
+            div.split-right
+                div.pane
+                    div.pane-hd
+                    div.pane-bd
+                        ul.vlist
+                            li
+                                a.btn.btn-icn.btn-icn-github(href="/connect/github")
+                                    img.icn(alt="Sign in with GitHub" src="/media/images/github.svg")
+                                    div Login with GitHub
+                            li
+                                a.btn.btn-icn.btn-icn-google(href="/connect/google")
+                                    img.icn(alt="Sign in with Google" src="/media/images/google.svg")
+                                    div Login with Google
+                            li
+                                a.btn.btn-icn.btn-icn-twitter(href="/connect/twitter")
+                                    img.icn(alt="Sign in with Twitter" src="/media/images/twitter.svg")
+                                    div Login with Twitter
