@@ -1,14 +1,17 @@
 const express = require('express');
 const compression = require('compression');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
+const mongo = require('connect-mongo');
 const session = require('express-session');
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config({ path: '.env.development' });
 
+const MongoStore = mongo(session);
 
+// auth middleware
 const Grant = require('grant-express');
 const grantConfig = require('../config/grant.config');
 const grant = new Grant(grantConfig[process.env.NODE_ENV]);
@@ -17,10 +20,23 @@ const grant = new Grant(grantConfig[process.env.NODE_ENV]);
 const staleCookieMiddleware = require('./middleware/staleCookieMiddleware');
 const hasAuth = require('./middleware/hasAuth');
 
+// controllers
 const homeController = require('./home/home.controller');
 const authController = require('./auth/auth.controller');
 
 const app = express();
+
+/**
+ * Connect to MongoDB.
+ */
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGODB_URI);
+
+mongoose.connection.on('error', function() {
+    console.log('MongoDB connection error. Please make sure MongoDB is running.');
+
+    process.exit();
+});
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, '../views'));
@@ -32,12 +48,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(staleCookieMiddleware);
 app.use(session({
     key: 'user_sid',
-    secret: 'very secret',
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: {
-        expires: 600000
-    }
+    store: new MongoStore({
+        url: process.env.MONGODB_URI,
+        autoReconnect: true
+    })
 }));
 app.use(grant);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
