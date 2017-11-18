@@ -6,8 +6,15 @@
 @import "./modules/_actionBar.css";
 @import "./modules/_btn.css";
 @import "./modules/_container.css";
+@import "./modules/_hdg.css";
 @import "./modules/_hlist.css";
+@import "./modules/_icn.css";
+@import "./modules/_pane.css";
 @import "./modules/_playerList.css";
 @import "./modules/_playerPiece.css";
 @import "./modules/_scoreboard.css";
+@import "./modules/_split.css";
+@import "./modules/_txt.css";
+@import "./modules/_util.css";
+@import "./modules/_vlist.css";
 @import "./modules/_wrapper.css";

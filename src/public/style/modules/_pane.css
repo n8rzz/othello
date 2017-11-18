@@ -1,0 +1,13 @@
+.pane {
+    padding: 20px 40px;
+}
+
+.pane-hd {}
+
+.pane-bd {
+    padding: 50px 0;
+}
+
+.pane-bd_center {
+    text-align: center;
+}

@@ -5,13 +5,13 @@
   "author": "Nate Geslin <teamtomkins23@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "npm run clean && npm run build:client && npm run build:scripts:server",
+    "build": "sh ./bin/build.sh",
     "clean": "rm -rf ./dist && mkdir -p dist/public/ && mkdir -p dist/public/script/",
+    "copy:assets": "cp -R ./src/public/media/ ./dist/public/media/",
     "build:client": "yarn build:scripts:client && yarn build:styles",
     "build:styles": "cp -R ./src/public/style/ ./dist/public/style/",
-    "build:scripts:client": "browserify -d src/public/script/app.ts -p [ tsify --noImplicitAny ] > dist/public/script/bundle.js",
-
-    "build:scripts:server": "tsc --p tsconfig.server.json",
+    "build:scripts:client": "sh ./bin/buildClient.sh",
+    "build:scripts:server": "sh ./bin/buildServer.sh",
     "start": "nodemon dist/server.js",
     "test": "nyc mocha -r ts-node/register -r source-map-support/register -r jsdom-global/register src/**/*.spec.ts",
     "report": "nyc report --reporter=cobertura --reporter=lcov"
@@ -30,14 +30,8 @@
     "all": true
   },
   "devDependencies": {
-    "@types/body-parser": "^1.16.8",
     "@types/chai": "^4.0.4",
-    "@types/compression": "^0.0.35",
-    "@types/dotenv": "^4.0.2",
-    "@types/express": "^4.0.39",
     "@types/mocha": "^2.2.44",
-    "@types/morgan": "^1.7.35",
-    "@types/node": "^8.0.51",
     "@types/sinon": "^2.3.7",
     "browserify": "^14.4.0",
     "chai": "^4.1.2",
@@ -53,12 +47,18 @@
     "tsify": "^3.0.3"
   },
   "dependencies": {
+    "@purest/providers": "^1.0.1",
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
+    "cookie-parser": "^1.4.3",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "grant-express": "^3.8.0",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-rc.4",
+    "purest": "^3.1.0",
+    "request-promise": "^4.2.2",
     "tslint": "^5.8.0",
     "typescript": "^2.5.3"
   }
