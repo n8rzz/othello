@@ -63,6 +63,7 @@ Library/
 .zcompdump
 .zhistory
 
+.env.development
 /.nyc_output
 coverage/
 dist/
