@@ -11,18 +11,21 @@ const twitter = purest({
 const PROVIDER = {
     GITHUB: 'github',
     GOOGLE: 'google',
+    TWITTER: 'twitter'
 };
-
 
 const githubCallbackHandler = function githubCallbackHandler(req, res) {
     githubTokenToProfile(req)
         .then((body) => {
             const response = JSON.parse(body);
+            const userProfile = {
+                username: response.login,
+                userEmail: response.email,
+                userToken: req.query.access_token,
+                provider: PROVIDER.GITHUB
+            };
 
-            req.session.username = response.login;
-            req.session.userEmail = response.email;
-            req.session.userToken = req.query.access_token;
-            req.session.provider = PROVIDER.GITHUB;
+            _responseToSession(req, res, userProfile);
 
             return res.redirect('/lobby');
         })
@@ -38,12 +41,15 @@ const googleCallbackHandler = function googleCallbackHandler(req, res) {
     _verifyGoogleToken(req.query)
         .then((tokenResponse) => _requestGoogleUserInfo(req.query.access_token)
             .then((response) => {
-                const userProfile = JSON.parse(response);
+                const parsedResponse = JSON.parse(response);
+                const userProfile = {
+                    username: parsedResponse.email,
+                    userEmail: parsedResponse.email,
+                    userToken: req.query.access_token,
+                    provider: PROVIDER.GOOGLE,
+                };
 
-                req.session.username = userProfile.email;
-                req.session.userEmail = userProfile.email;
-                req.session.userToken = req.query.access_token;
-                req.session.provider = PROVIDER.GOOGLE;
+                _responseToSession(req, res, userProfile);
 
                 return res.redirect('/lobby');
             })
@@ -57,9 +63,43 @@ const googleCallbackHandler = function googleCallbackHandler(req, res) {
 };
 
 const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
-    const userProfile = twitterTokenToProfile(req.query);
+    const oauthSuccessResponse = req.query;
 
-    res.end(JSON.stringify(req.query, null, 2));
+    // {
+    //     "access_token": string,
+    //     "access_secret": string,
+    //     "raw": {
+    //         "oauth_token": string,
+    //         "oauth_token_secret": string,
+    //         "user_id": number,
+    //         "screen_name": string,
+    //         "x_auth_expires": string
+    //     }
+    // }
+    twitter.query()
+        .select('users/show')
+        .where({
+            user_id: oauthSuccessResponse.raw.user_id
+        })
+        .auth(oauthSuccessResponse.access_token, oauthSuccessResponse.access_secret)
+        .request(function(error, response, body) {
+            if (error) {
+                console.log(error);
+
+                res.redirect('/login');
+            }
+
+            const userProfile = {
+                username: `@${body.screen_name}`,
+                userEmail: '',
+                userToken: oauthSuccessResponse.access_token,
+                provider: PROVIDER.TWITTER,
+            };
+
+            _responseToSession(req, res, userProfile);
+
+            res.redirect('/lobby');
+        });
 };
 
 // {
@@ -83,29 +123,6 @@ function githubTokenToProfile(req) {
 
 // {
 //     "access_token": string,
-//     "access_secret": string,
-//     "raw": {
-//         "oauth_token": string,
-//         "oauth_token_secret": string,
-//         "user_id": number,
-//         "screen_name": string,
-//         "x_auth_expires": string
-//     }
-// }
-function twitterTokenToProfile(oauthSuccessResponse) {
-    const req = twitter.query()
-        .select('users/show')
-        .where({
-            user_id: oauthSuccessResponse.raw.user_id
-        })
-        .auth(oauthSuccessResponse.access_token, oauthSuccessResponse.access_secret)
-        .request(function(err, res, body) {
-
-        });
-}
-
-// {
-//     "access_token": string,
 //     "raw": {
 //         "access_token": string
 //         "expires_in": string
@@ -121,6 +138,12 @@ function _requestGoogleUserInfo(accessToken) {
     return request(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json&access_token=${accessToken}`);
 }
 
+function _responseToSession(req, res, userProfile) {
+    req.session.username = userProfile.username;
+    req.session.userEmail = userProfile.userEmail;
+    req.session.userToken = userProfile.userToken;
+    req.session.provider = userProfile.provider;
+}
 
 module.exports = {
     githubCallbackHandler: githubCallbackHandler,
