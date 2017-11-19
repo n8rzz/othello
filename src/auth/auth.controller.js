@@ -9,7 +9,8 @@ const twitter = purest({
 });
 
 const PROVIDER = {
-    GITHUB: 'github'
+    GITHUB: 'github',
+    GOOGLE: 'google',
 };
 
 
@@ -33,9 +34,26 @@ const githubCallbackHandler = function githubCallbackHandler(req, res) {
 };
 
 const googleCallbackHandler = function googleCallbackHandler(req, res) {
-    const userProfile = googleTokenToProfile(req.query);
+    // FIXME: this is confusing, fix it
+    _verifyGoogleToken(req.query)
+        .then((tokenResponse) => _requestGoogleUserInfo(req.query.access_token)
+            .then((response) => {
+                const userProfile = JSON.parse(response);
 
-    res.end(JSON.stringify(req.query, null, 2));
+                req.session.username = userProfile.email;
+                req.session.userEmail = userProfile.email;
+                req.session.userToken = req.query.access_token;
+                req.session.provider = PROVIDER.GOOGLE;
+
+                return res.redirect('/lobby');
+            })
+            .catch((error) => { throw error; })
+        )
+        .catch((err) => {
+            console.log(err);
+
+            return res.redirect('/login');
+         });
 };
 
 const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
@@ -65,23 +83,6 @@ function githubTokenToProfile(req) {
 
 // {
 //     "access_token": string,
-//     "raw": {
-//         "access_token": string
-//         "expires_in": string
-//         "id_token": string
-//         "token_type": string
-//     }
-// }
-function googleTokenToProfile(oauthSuccessResponse) {
-    const verifyToken = _verifyGoogleToken(oauthSuccessResponse);
-
-    verifyToken
-        .then((tokenResponse) => _verifyTokenResponseHandler(tokenResponse, oauthSuccessResponse.access_token))
-        .catch((error) => { throw error; });
-}
-
-// {
-//     "access_token": string,
 //     "access_secret": string,
 //     "raw": {
 //         "oauth_token": string,
@@ -103,15 +104,15 @@ function twitterTokenToProfile(oauthSuccessResponse) {
         });
 }
 
-function _verifyTokenResponseHandler(tokenResponse, accessToken) {
-    const userInfo = _requestGoogleUserInfo(accessToken);
-
-    return userInfo.then((userInfoResponse) => {
-            // TODO: do stuff with the user profile info
-        })
-        .catch((error) => { throw error; });
-}
-
+// {
+//     "access_token": string,
+//     "raw": {
+//         "access_token": string
+//         "expires_in": string
+//         "id_token": string
+//         "token_type": string
+//     }
+// }
 function _verifyGoogleToken(oauthSuccessResponse) {
     return request(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${oauthSuccessResponse.raw.id_token}`);
 }
