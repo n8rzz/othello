@@ -44,7 +44,9 @@ const logout = function logout(req, res) {
  * Only available for users with credentials
  */
 const lobby = function lobby(req, res) {
-    res.render('lobby/lobby');
+    res.render('lobby/lobby', {
+        username: req.session.username
+    });
 }
 
 module.exports = {

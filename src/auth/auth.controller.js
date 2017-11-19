@@ -43,7 +43,7 @@ const googleCallbackHandler = function googleCallbackHandler(req, res) {
             .then((response) => {
                 const parsedResponse = JSON.parse(response);
                 const userProfile = {
-                    username: parsedResponse.email,
+                    username: parsedResponse.email.split('@')[0],
                     userEmail: parsedResponse.email,
                     userToken: req.query.access_token,
                     provider: PROVIDER.GOOGLE,

@@ -50,7 +50,7 @@ app.use(grant);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 // controllers
-app.get('/', homeController.index);
+app.get('/', hasAuth, homeController.index);
 app.get('/login', homeController.login);
 app.get('/logout', homeController.logout);
 app.get('/lobby', hasAuth, homeController.lobby);
