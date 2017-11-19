@@ -8,24 +8,98 @@ const twitter = purest({
     config
 });
 
+const PROVIDER = {
+    GITHUB: 'github',
+    GOOGLE: 'google',
+    TWITTER: 'twitter'
+};
+
 const githubCallbackHandler = function githubCallbackHandler(req, res) {
-    const userProfile = githubTokenToProfile(req.query);
+    githubTokenToProfile(req)
+        .then((body) => {
+            const response = JSON.parse(body);
+            const userProfile = {
+                username: response.login,
+                userEmail: response.email,
+                userToken: req.query.access_token,
+                provider: PROVIDER.GITHUB
+            };
 
-    console.log('+++', userProfile);
+            _responseToSession(req, res, userProfile);
 
-    res.end(JSON.stringify(req.query, null, 2));
+            return res.redirect('/lobby');
+        })
+        .catch((err) => {
+            console.log(err);
+
+            return res.redirect('/login');
+        });
 };
 
 const googleCallbackHandler = function googleCallbackHandler(req, res) {
-    const userProfile = googleTokenToProfile(req.query);
+    // FIXME: this is confusing, fix it
+    _verifyGoogleToken(req.query)
+        .then((tokenResponse) => _requestGoogleUserInfo(req.query.access_token)
+            .then((response) => {
+                const parsedResponse = JSON.parse(response);
+                const userProfile = {
+                    username: parsedResponse.email,
+                    userEmail: parsedResponse.email,
+                    userToken: req.query.access_token,
+                    provider: PROVIDER.GOOGLE,
+                };
 
-    res.end(JSON.stringify(req.query, null, 2));
+                _responseToSession(req, res, userProfile);
+
+                return res.redirect('/lobby');
+            })
+            .catch((error) => { throw error; })
+        )
+        .catch((err) => {
+            console.log(err);
+
+            return res.redirect('/login');
+         });
 };
 
 const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
-    const userProfile = twitterTokenToProfile(req.query);
+    const oauthSuccessResponse = req.query;
 
-    res.end(JSON.stringify(req.query, null, 2));
+    // {
+    //     "access_token": string,
+    //     "access_secret": string,
+    //     "raw": {
+    //         "oauth_token": string,
+    //         "oauth_token_secret": string,
+    //         "user_id": number,
+    //         "screen_name": string,
+    //         "x_auth_expires": string
+    //     }
+    // }
+    twitter.query()
+        .select('users/show')
+        .where({
+            user_id: oauthSuccessResponse.raw.user_id
+        })
+        .auth(oauthSuccessResponse.access_token, oauthSuccessResponse.access_secret)
+        .request(function(error, response, body) {
+            if (error) {
+                console.log(error);
+
+                res.redirect('/login');
+            }
+
+            const userProfile = {
+                username: `@${body.screen_name}`,
+                userEmail: '',
+                userToken: oauthSuccessResponse.access_token,
+                provider: PROVIDER.TWITTER,
+            };
+
+            _responseToSession(req, res, userProfile);
+
+            res.redirect('/lobby');
+        });
 };
 
 // {
@@ -36,17 +110,15 @@ const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
 //         "token_type": string
 //     }
 // }
-function githubTokenToProfile(oauthSuccessResponse) {
+function githubTokenToProfile(req) {
     const options = {
-        url: `https://api.github.com/user?access_token=${oauthSuccessResponse.access_token}`,
+        url: `https://api.github.com/user?access_token=${req.query.access_token}`,
         headers: {
             'User-Agent': 'othello23'
         }
     };
 
-    return request(options, function(err, res, body) {
-        console.log('+++', JSON.parse(body));
-    });
+    return request(options);
 }
 
 // {
@@ -58,45 +130,6 @@ function githubTokenToProfile(oauthSuccessResponse) {
 //         "token_type": string
 //     }
 // }
-function googleTokenToProfile(oauthSuccessResponse) {
-    const verifyToken = _verifyGoogleToken(oauthSuccessResponse);
-
-    verifyToken.then((tokenResponse) => _verifyTokenResponseHandler(tokenResponse, oauthSuccessResponse.access_token))
-        .catch((error) => { throw error; });
-}
-
-// {
-//     "access_token": string,
-//     "access_secret": string,
-//     "raw": {
-//         "oauth_token": string,
-//         "oauth_token_secret": string,
-//         "user_id": number,
-//         "screen_name": string,
-//         "x_auth_expires": string
-//     }
-// }
-function twitterTokenToProfile(oauthSuccessResponse) {
-    const req = twitter.query()
-        .select('users/show')
-        .where({
-            user_id: oauthSuccessResponse.raw.user_id
-        })
-        .auth(oauthSuccessResponse.access_token, oauthSuccessResponse.access_secret)
-        .request(function(err, res, body) {
-            console.log(':::', body);
-        });
-}
-
-function _verifyTokenResponseHandler(tokenResponse, accessToken) {
-    const userInfo = _requestGoogleUserInfo(accessToken);
-
-    return userInfo.then((userInfoResponse) => {
-            // TODO: do stuff with the user profile info
-        })
-        .catch((error) => { throw error; });
-}
-
 function _verifyGoogleToken(oauthSuccessResponse) {
     return request(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${oauthSuccessResponse.raw.id_token}`);
 }
@@ -105,6 +138,12 @@ function _requestGoogleUserInfo(accessToken) {
     return request(`https://www.googleapis.com/oauth2/v3/userinfo?alt=json&access_token=${accessToken}`);
 }
 
+function _responseToSession(req, res, userProfile) {
+    req.session.username = userProfile.username;
+    req.session.userEmail = userProfile.userEmail;
+    req.session.userToken = userProfile.userToken;
+    req.session.provider = userProfile.provider;
+}
 
 module.exports = {
     githubCallbackHandler: githubCallbackHandler,

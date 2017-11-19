@@ -38,11 +38,8 @@ class App {
         this.gameController.reset();
     }
 
-    public onClickActionBarQuit(event: UIEvent): void {
-        console.log('app.onClickActionBarQuit()');
-    }
+    public onClickActionBarQuit(event: UIEvent): void {}
 }
 
 const app = new App();
-console.log(app);
 
