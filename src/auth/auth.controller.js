@@ -8,12 +8,28 @@ const twitter = purest({
     config
 });
 
+const PROVIDER = {
+    GITHUB: 'github'
+};
+
+
 const githubCallbackHandler = function githubCallbackHandler(req, res) {
-    const userProfile = githubTokenToProfile(req.query);
+    githubTokenToProfile(req)
+        .then((body) => {
+            const response = JSON.parse(body);
 
-    console.log('+++', userProfile);
+            req.session.username = response.login;
+            req.session.userEmail = response.email;
+            req.session.userToken = req.query.access_token;
+            req.session.provider = PROVIDER.GITHUB;
 
-    res.end(JSON.stringify(req.query, null, 2));
+            return res.redirect('/lobby');
+        })
+        .catch((err) => {
+            console.log(err);
+
+            return res.redirect('/login');
+        });
 };
 
 const googleCallbackHandler = function googleCallbackHandler(req, res) {
@@ -36,17 +52,15 @@ const twitterCallbackHandler = function twitterCallbackHandler(req, res) {
 //         "token_type": string
 //     }
 // }
-function githubTokenToProfile(oauthSuccessResponse) {
+function githubTokenToProfile(req) {
     const options = {
-        url: `https://api.github.com/user?access_token=${oauthSuccessResponse.access_token}`,
+        url: `https://api.github.com/user?access_token=${req.query.access_token}`,
         headers: {
             'User-Agent': 'othello23'
         }
     };
 
-    return request(options, function(err, res, body) {
-        console.log('+++', JSON.parse(body));
-    });
+    return request(options);
 }
 
 // {
@@ -61,7 +75,8 @@ function githubTokenToProfile(oauthSuccessResponse) {
 function googleTokenToProfile(oauthSuccessResponse) {
     const verifyToken = _verifyGoogleToken(oauthSuccessResponse);
 
-    verifyToken.then((tokenResponse) => _verifyTokenResponseHandler(tokenResponse, oauthSuccessResponse.access_token))
+    verifyToken
+        .then((tokenResponse) => _verifyTokenResponseHandler(tokenResponse, oauthSuccessResponse.access_token))
         .catch((error) => { throw error; });
 }
 
@@ -84,7 +99,7 @@ function twitterTokenToProfile(oauthSuccessResponse) {
         })
         .auth(oauthSuccessResponse.access_token, oauthSuccessResponse.access_secret)
         .request(function(err, res, body) {
-            console.log(':::', body);
+
         });
 }
 

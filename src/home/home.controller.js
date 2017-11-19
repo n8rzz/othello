@@ -17,6 +17,26 @@ const login = function login(req, res) {
 }
 
 /**
+ * * GET /logout
+ *
+ * destroy the current session and redirect to `/login` view
+ */
+const logout = function logout(req, res) {
+    if (!req.session.username || !req.session.userToken) {
+        return;
+    }
+
+    req.session.destroy(function(err) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        res.redirect('/login');
+    });
+}
+
+/**
  * * GET /lobby
  *
  * Lobby view
@@ -30,5 +50,6 @@ const lobby = function lobby(req, res) {
 module.exports = {
     index: index,
     login: login,
+    logout: logout,
     lobby: lobby,
 };
