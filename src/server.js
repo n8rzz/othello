@@ -25,20 +25,7 @@ const accessControlMiddleware = require('./middleware/accessControlMiddleware');
 const homeController = require('./home/home.controller');
 const authController = require('./auth/auth.controller');
 
-const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-io.set('origins', '*localhost:*');
-
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'pug');
-app.use(compression());
-app.use(logger(process.env.LOG_FORMAT));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(staleCookieMiddleware);
-app.use(session({
+const sessionMiddleware = session({
     key: 'user_sid',
     secret: process.env.SESSION_SECRET,
     resave: true,
@@ -49,9 +36,27 @@ app.use(session({
         client: redisClient,
         ttl: 260
     })
-}));
+});
+
+const app = express();
+const http = require('http').Server(app);
+
+// socket
+const io = require('socket.io')(http);
+io.set('origins', '*localhost:*');
+io.use((socket, next) => sessionMiddleware(socket.request, socket.request.res, next))
+
+// middleware
+app.set('port', process.env.PORT || 3000);
+app.set('views', path.join(__dirname, '../views'));
+app.set('view engine', 'pug');
+app.use(compression());
+app.use(logger(process.env.LOG_FORMAT));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(staleCookieMiddleware);
+app.use(sessionMiddleware);
 app.use(grant);
-// app.use(accessControlMiddleware);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 // controllers
@@ -69,8 +74,8 @@ app.get('/handle_twitter_callback', authController.twitterCallbackHandler);
 app.get(express.static(__dirname + '/public'));
 
 // socket
-io.on('connection', function(socket) {
-    console.log('a user connected');
+io.on('connection', (socket) => {
+    console.log('a user connected', socket.request.session);
 });
 
 http.listen(app.get('port'), () => {
