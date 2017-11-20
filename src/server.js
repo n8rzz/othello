@@ -19,12 +19,16 @@ const grant = new Grant(grantConfig[process.env.NODE_ENV]);
 // middleware
 const staleCookieMiddleware = require('./middleware/staleCookieMiddleware');
 const hasAuth = require('./middleware/hasAuth');
+const accessControlMiddleware = require('./middleware/accessControlMiddleware');
 
 // controllers
 const homeController = require('./home/home.controller');
 const authController = require('./auth/auth.controller');
 
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+io.set('origins', '*localhost:*');
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, '../views'));
@@ -47,6 +51,7 @@ app.use(session({
     })
 }));
 app.use(grant);
+// app.use(accessControlMiddleware);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 31557600000 }));
 
 // controllers
@@ -61,8 +66,14 @@ app.get('/lobby', hasAuth, homeController.lobby);
 app.get('/handle_github_callback', authController.githubCallbackHandler);
 app.get('/handle_google_callback', authController.googleCallbackHandler);
 app.get('/handle_twitter_callback', authController.twitterCallbackHandler);
+app.get(express.static(__dirname + '/public'));
 
-app.listen(app.get('port'), () => {
+// socket
+io.on('connection', function(socket) {
+    console.log('a user connected');
+});
+
+http.listen(app.get('port'), () => {
     console.log(('  App is running at http://localhost:%d in %s mode'), app.get('port'), app.get('env'));
     console.log('  Press CTRL-C to stop\n');
 });

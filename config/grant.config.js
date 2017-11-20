@@ -2,7 +2,7 @@ module.exports = {
     development: {
         server: {
             protocol: 'http',
-            host: 'dummy.com:4321'
+            host: 'localhost:4321'
         },
         github: {
             key: process.env.GITHUB_OAUTH_KEY,

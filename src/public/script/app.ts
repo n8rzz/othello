@@ -1,6 +1,8 @@
+import * as socketIo from 'socket.io-client';
 import GameController from './game/GameController';
 
 class App {
+
     public gameController: GameController = null;
     public actionBarRestartElement: HTMLButtonElement = null;
     public actionBarQuitElement: HTMLButtonElement = null;
@@ -8,7 +10,11 @@ class App {
     public onClickActionBarRestsartHandler: (event: UIEvent) => void = this.onClickActionBarRestsart.bind(this);
     public onClickActionBarQuitHandler: (event: UIEvent) => void = this.onClickActionBarQuit.bind(this);
 
+    private socket: any;
+
     constructor() {
+        this.socket = socketIo.connect('http://localhost:4321/');
+
         this.init();
     }
 
@@ -28,6 +34,10 @@ class App {
     }
 
     public enable(): this {
+        if (typeof this.actionBarQuitElement === 'undefined') {
+            return;
+        }
+
         this.actionBarQuitElement.addEventListener('click', this.onClickActionBarQuitHandler);
         this.actionBarRestartElement.addEventListener('click', this.onClickActionBarRestsartHandler);
 

@@ -18,6 +18,10 @@ class GameController {
     private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
 
     constructor(scoreboardElement: HTMLElement, stageElement: SVGElement) {
+        if (typeof scoreboardElement === 'undefined') {
+            return null;
+        }
+
         return this._init()
             ._createChildren(scoreboardElement, stageElement);
     }
