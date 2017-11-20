@@ -1,7 +1,7 @@
 const express = require('express');
-const redis = require('redis');
+// const redis = require('redis');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+// const RedisStore = require('connect-redis')(session);
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -9,7 +9,7 @@ const logger = require('morgan');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: '.env.development' });
-const redisClient = redis.createClient();
+// const redisClient = redis.createClient();
 
 // auth middleware
 const Grant = require('grant-express');
@@ -25,17 +25,20 @@ const accessControlMiddleware = require('./middleware/accessControlMiddleware');
 const homeController = require('./home/home.controller');
 const authController = require('./auth/auth.controller');
 
+// services
+const userService = require('./user/user.service');
+
 const sessionMiddleware = session({
     key: 'user_sid',
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    store: new RedisStore({
-        host: process.env.REDIS_URI,
-        port: process.env.REDIS_PORT,
-        client: redisClient,
-        ttl: 260
-    })
+    // store: new RedisStore({
+    //     host: process.env.REDIS_URI,
+    //     port: process.env.REDIS_PORT,
+    //     client: redisClient,
+    //     ttl: 260
+    // })
 });
 
 const app = express();
@@ -75,7 +78,23 @@ app.get(express.static(__dirname + '/public'));
 
 // socket
 io.on('connection', (socket) => {
-    console.log('a user connected', socket.request.session);
+    const session = socket.request.session;
+    if (typeof session.username === 'undefined') {
+        socket.disconnect(true);
+
+        return;
+    }
+
+    userService.addUserToCollection(session.username, session.userEmail);
+    console.log('::: A user connected: ', `${session.username} - ${session.userEmail}`);
+    console.log('::: Connected Users:', userService.getConnectedUsers());
+
+    socket.on('disconnect', (reason) => {
+        userService.removeUserFromCollection(session.username);
+
+        console.log('::: A user has disconnected: ', `${session.username} - ${session.userEmail}`);
+        console.log('::: Connected Users:', userService.getConnectedUsers());
+    });
 });
 
 http.listen(app.get('port'), () => {

@@ -47,7 +47,7 @@ const logout = function logout(req, res) {
  */
 const lobby = function lobby(req, res) {
     res.render('lobby/lobby', {
-        username: req.session.username
+        username: req.session.username,
     });
 }
 
