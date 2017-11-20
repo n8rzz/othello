@@ -4,7 +4,9 @@
  * Home view
  */
 const index = function index(req, res) {
-    res.render('home');
+    res.render('game', {
+        playerOne: req.session.username,
+    });
 }
 
 /**
