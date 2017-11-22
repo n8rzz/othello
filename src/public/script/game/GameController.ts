@@ -8,6 +8,7 @@ import { PLAYER } from '../constants/playerConstants';
 
 class GameController {
     public activePlayer: number = 0;
+    private _actionBarRestartElement: HTMLButtonElement = null;
 
     private _gameBoardController: GameBoardController = null;
     private _gameCompleteView: GameCompleteView = null;
@@ -16,19 +17,25 @@ class GameController {
     private _stageViewController: StageViewController = null;
     private _playerShouldPassTurn: boolean = false;
     private _onClickCellHandler: (event: UIEvent) => void = this._onClickCell.bind(this);
+    private _onClickActionBarRestsartHandler: (event: UIEvent) => void = this._onClickRestart.bind(this);
 
-    constructor(scoreboardElement: HTMLElement, stageElement: SVGElement) {
-        if (typeof scoreboardElement === 'undefined') {
+    constructor() {
+        const scoreboardElement: HTMLElement = document.getElementsByClassName('js-scoreboardView')[0] as HTMLElement;
+        const stageElement: SVGElement = document.getElementsByClassName('js-stage')[0] as SVGElement;
+
+        if (typeof scoreboardElement === 'undefined' || typeof stageElement === 'undefined') {
             return null;
         }
 
         return this._init()
-            ._createChildren(scoreboardElement, stageElement);
+            ._createChildren(scoreboardElement, stageElement)
+            ._enable();
     }
 
     public reset(): void {
         this.activePlayer = PLAYER.ONE;
 
+        this._gameCompleteView.hide();
         this._gameBoardController.reset();
         this._playerMoveHistory.reset();
         this._stageViewController.updateWithGameBoardState(this._gameBoardController.gameBoard);
@@ -96,9 +103,20 @@ class GameController {
         this._scoreboardView = new ScoreboardView(scoreboardElement, this.activePlayer);
         this._gameCompleteView = new GameCompleteView(stageElement);
         this._playerMoveHistory = new PlayerMoveHistory();
+        this._actionBarRestartElement = document.getElementsByClassName('js-actionBar-restart')[0] as HTMLButtonElement;
 
         this._updateScoreboardView();
         this._moveToNextTurn();
+
+        return this;
+    }
+
+    private _enable(): this {
+        if (typeof this._actionBarRestartElement === 'undefined') {
+            return;
+        }
+
+        this._actionBarRestartElement.addEventListener('click', this._onClickActionBarRestsartHandler);
 
         return this;
     }
@@ -134,6 +152,10 @@ class GameController {
         const position: number[] = idToPositionTranslator(target.id);
 
         this.update(position, target.id);
+    }
+
+    private _onClickRestart(event: UIEvent): void {
+        this.reset();
     }
 }
 
