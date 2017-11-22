@@ -1,6 +1,19 @@
 extends ../has_auth_layout
 
 block content
-    h1 Lobby
-    h2 signed in as #{username}
-    a.btn(href="/logout") Logout
+    ul.hlist
+        li
+            h2 signed in as #{username}
+        li
+            a.btn(href="/logout") Logout
+    div.wrapper.wrapper-xlarge
+        div
+            h1.hdg.hdg-h1.hdg-center Lobby
+        div
+            ul.hlist
+                li
+                    a.btn(href="/game/create") Host Game
+                li
+                    a.btn(href="/game/join") Join Random Game
+        div
+            include _lobby_game_list_table

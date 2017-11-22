@@ -1,0 +1,14 @@
+.table {
+    margin: 20px auto;
+    width: 80%;
+}
+
+.table-head {
+    background: #fafafa;
+    padding: 5px;
+    text-align: left;
+}
+
+.table td {
+    padding: 5px;
+}
